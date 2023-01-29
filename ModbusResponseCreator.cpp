@@ -148,13 +148,13 @@ boolean ModbusResponseCreator::isDataAddressWrong(uint16_t startAddress, uint16_
     switch (typeOfMemmory)
     {
     case COILS:
-        return startAddress>coilsSize-1 || startAddress<0 || startAddress+numberOfCoilsOrRegisters>coilsSize-1;
+        return startAddress>coilsSize-1 || startAddress<0 || startAddress+numberOfCoilsOrRegisters-1>coilsSize-1;
         break;
     case HOLDING_REGISTERS:
-        return startAddress>holdingRegsSize-1 || startAddress<0 || startAddress+numberOfCoilsOrRegisters>holdingRegsSize-1;
+        return startAddress>holdingRegsSize-1 || startAddress<0 || startAddress+numberOfCoilsOrRegisters-1>holdingRegsSize-1;
         break;
     case INPUT_REGISTERS:
-        return startAddress>inputRegsSize-1 || startAddress<0 || startAddress+numberOfCoilsOrRegisters>inputRegsSize-1;
+        return startAddress>inputRegsSize-1 || startAddress<0 || startAddress+numberOfCoilsOrRegisters-1>inputRegsSize-1;
         break;
     default:
         return true;
