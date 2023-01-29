@@ -16,7 +16,7 @@ holdingRegisters(holdingRegisters_refrence),inputRegsSize(inputSize)
 uint16_t ModbusResponseCreator::createReadCoilsResponse(uint16_t startAddress,uint16_t numberOfCoils)
 {
     
-    if(startAddress>coilsSize-1 || startAddress<0 || startAddress+numberOfCoils>coilsSize-1){
+    if(isDataAddressWrong(startAddress,numberOfCoils,COILS)){
         throw INVALID_DATA_ADDRESS_EXCEPTION_CODE;
     }
     delete[] message;
@@ -59,7 +59,7 @@ uint16_t ModbusResponseCreator::createReadCoilsResponse(uint16_t startAddress,ui
 
 uint16_t ModbusResponseCreator::createWriteSingleRegisterResponse(uint16_t address,word value)
 {
-    if(address<0 || address>holdingRegsSize-1){
+    if(isDataAddressWrong(address,0,HOLDING_REGISTERS)){
        throw INVALID_DATA_ADDRESS_EXCEPTION_CODE;
     }
     holdingRegisters[address]=value;
@@ -78,7 +78,7 @@ uint16_t ModbusResponseCreator::createWriteSingleRegisterResponse(uint16_t addre
 
 uint16_t ModbusResponseCreator::createReadInputRegistersResponse(uint16_t startAddress,uint16_t numOfRegisters){
     
-    if(startAddress>inputRegsSize-1 || startAddress<0 || startAddress+numOfRegisters>inputRegsSize-1){
+    if(isDataAddressWrong(startAddress,numOfRegisters,INPUT_REGISTERS)){
         throw INVALID_DATA_ADDRESS_EXCEPTION_CODE;
     }
     delete[] message;
@@ -105,7 +105,7 @@ uint16_t ModbusResponseCreator::createReadInputRegistersResponse(uint16_t startA
 
 uint16_t ModbusResponseCreator::createWriteSingleCoilResponse(uint16_t address,boolean value)
 {
-    if(address<0 || address>coilsSize-1){
+    if(isDataAddressWrong(address,0,COILS)){
         throw INVALID_DATA_ADDRESS_EXCEPTION_CODE;
     }
     delete[] message;
@@ -143,6 +143,24 @@ uint16_t ModbusResponseCreator::createExceptionResponse(uint8_t functionCode, ui
     return message_size;
 }
 
+boolean ModbusResponseCreator::isDataAddressWrong(uint16_t startAddress, uint16_t numberOfCoilsOrRegisters, uint8_t typeOfMemmory)
+{
+    switch (typeOfMemmory)
+    {
+    case COILS:
+        return startAddress>coilsSize-1 || startAddress<0 || startAddress+numberOfCoilsOrRegisters>coilsSize-1;
+        break;
+    case HOLDING_REGISTERS:
+        return startAddress>inputRegsSize-1 || startAddress<0 || startAddress+numberOfCoilsOrRegisters>holdingRegsSize-1;
+        break;
+    case INPUT_REGISTERS:
+        return startAddress>inputRegsSize-1 || startAddress<0 || startAddress+numberOfCoilsOrRegisters>inputRegsSize-1;
+        break;
+    default:
+        return true;
+        break;
+    }
+}
 
 ModbusResponseCreator::~ModbusResponseCreator()
 {

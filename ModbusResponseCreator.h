@@ -26,7 +26,8 @@ public:
 
     uint16_t createExceptionResponse(uint8_t functionCode,uint8_t exceptionCode);
 
-    boolean checkDataAddress(uint16_t startAddress,uint16_t numberOfCoilsOrRegisters);
+    boolean isDataAddressWrong(uint16_t startAddress,uint16_t numberOfCoilsOrRegisters,uint8_t typeOfMemory);
+
 
     byte *getMessage(){return message;}
     ~ModbusResponseCreator();
