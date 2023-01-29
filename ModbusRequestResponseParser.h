@@ -20,6 +20,10 @@ public:
     uint16_t getWriteSingleRegisterValue();
     boolean getWriteSingleCoilValue();
     uint16_t getInputRegistersValues(uint32_t index);
+
+    boolean isItException();
+    uint8_t getExceptionCode();
+
     ~ModbusRequestResponseParser();
 };
 
