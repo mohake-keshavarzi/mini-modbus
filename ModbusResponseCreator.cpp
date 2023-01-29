@@ -17,7 +17,7 @@ uint16_t ModbusResponseCreator::createReadCoilsResponse(uint16_t startAddress,ui
 {
     
     if(startAddress>coilsSize-1 || startAddress<0 || startAddress+numberOfCoils>coilsSize-1){
-        return createExceptionResponse(READ_COILS_FUNCTIONCODE,INVALID_DATA_ADDRESS_EXCEPTION_CODE);
+        throw INVALID_DATA_ADDRESS_EXCEPTION_CODE;
     }
     delete[] message;
     message_size=3; //Master id +function code + byte count
@@ -60,7 +60,7 @@ uint16_t ModbusResponseCreator::createReadCoilsResponse(uint16_t startAddress,ui
 uint16_t ModbusResponseCreator::createWriteSingleRegisterResponse(uint16_t address,word value)
 {
     if(address<0 || address>holdingRegsSize-1){
-        return createExceptionResponse(WRITE_SINGLE_REGISTER_FUNCTIONCODE,INVALID_DATA_ADDRESS_EXCEPTION_CODE);
+       throw INVALID_DATA_ADDRESS_EXCEPTION_CODE;
     }
     holdingRegisters[address]=value;
     delete[] message;
@@ -79,7 +79,7 @@ uint16_t ModbusResponseCreator::createWriteSingleRegisterResponse(uint16_t addre
 uint16_t ModbusResponseCreator::createReadInputRegistersResponse(uint16_t startAddress,uint16_t numOfRegisters){
     
     if(startAddress>inputRegsSize-1 || startAddress<0 || startAddress+numOfRegisters>inputRegsSize-1){
-        return createExceptionResponse(READ_COILS_FUNCTIONCODE,INVALID_DATA_ADDRESS_EXCEPTION_CODE);
+        throw INVALID_DATA_ADDRESS_EXCEPTION_CODE;
     }
     delete[] message;
     message_size=3; //master id +function code + byte count
@@ -106,7 +106,7 @@ uint16_t ModbusResponseCreator::createReadInputRegistersResponse(uint16_t startA
 uint16_t ModbusResponseCreator::createWriteSingleCoilResponse(uint16_t address,boolean value)
 {
     if(address<0 || address>coilsSize-1){
-        return createExceptionResponse(WRITE_SINGLE_REGISTER_FUNCTIONCODE,INVALID_DATA_ADDRESS_EXCEPTION_CODE);
+        throw INVALID_DATA_ADDRESS_EXCEPTION_CODE;
     }
     delete[] message;
     // size is master id + function code + address + value = 1+2+2=5
