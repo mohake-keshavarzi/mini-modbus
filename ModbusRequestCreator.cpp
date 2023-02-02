@@ -3,6 +3,16 @@
 #include "WordFunctions.h"
 
 
+/**
+ * The overall structure each request is so similar to modbus theory
+ * except that here we don't have start bit at start and CRC at end and end bits at end
+ * Also here the first byte is for slave ID or master ID which originally in modbus is up to phisycal layer
+*/
+
+/**
+ * Each function returns the overall length of request message
+*/
+
 ModbusRequestCreator::ModbusRequestCreator(uint8_t slaveID){
     this->slaveID=slaveID;
 
@@ -45,6 +55,9 @@ uint16_t ModbusRequestCreator::createReadInputRegistersRequest(uint16_t startAdd
     return 6;
 }
 
+/**
+ * In coils to send command for set we should send 0xFF00 as a value and for reset we should send 0x0000
+*/
 uint16_t ModbusRequestCreator::createWriteSingleCoilRequest(uint16_t address,boolean value){
 
     // size is slaveID + function code + address + value = 1+1+2+2=6

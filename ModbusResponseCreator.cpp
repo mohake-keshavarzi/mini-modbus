@@ -13,6 +13,9 @@ holdingRegisters(holdingRegisters_refrence),inputRegsSize(inputSize)
     message_size=8;
 }
 
+/**
+ * Returns 0 for INVALID_DATA_ADDRESS_EXCEPTION_CODE;
+*/
 uint16_t ModbusResponseCreator::createReadCoilsResponse(uint16_t startAddress,uint16_t numberOfCoils)
 {
     //INVALID_DATA_ADDRESS_EXCEPTION_CODE;
@@ -56,7 +59,9 @@ uint16_t ModbusResponseCreator::createReadCoilsResponse(uint16_t startAddress,ui
     return message_size;
 }
 
-
+/**
+ * Returns 0 for INVALID_DATA_ADDRESS_EXCEPTION_CODE;
+*/
 uint16_t ModbusResponseCreator::createWriteSingleRegisterResponse(uint16_t address,word value)
 {
     //INVALID_DATA_ADDRESS_EXCEPTION_CODE;
@@ -77,6 +82,9 @@ uint16_t ModbusResponseCreator::createWriteSingleRegisterResponse(uint16_t addre
     return message_size;    
 }
 
+/**
+ * Returns 0 for INVALID_DATA_ADDRESS_EXCEPTION_CODE;
+*/
 uint16_t ModbusResponseCreator::createReadInputRegistersResponse(uint16_t startAddress,uint16_t numOfRegisters){
     
     //INVALID_DATA_ADDRESS_EXCEPTION_CODE;
@@ -105,6 +113,9 @@ uint16_t ModbusResponseCreator::createReadInputRegistersResponse(uint16_t startA
     return message_size;
 }
 
+/**
+ * Returns 0 for INVALID_DATA_ADDRESS_EXCEPTION_CODE;
+*/
 uint16_t ModbusResponseCreator::createWriteSingleCoilResponse(uint16_t address,boolean value)
 {
     //INVALID_DATA_ADDRESS_EXCEPTION_CODE;

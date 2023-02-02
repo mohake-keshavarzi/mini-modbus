@@ -51,14 +51,20 @@ uint16_t ModbusRequestResponseParser::getWriteSingleRegisterValue()
     return  funcs.MSBLSBJoin(message[4],message[5]);
 }
 
-boolean ModbusRequestResponseParser::getWriteSingleCoilValue()
+/**
+ * For coils to set you should send 0xFF00 and for reset you should send 0x0000
+ * If none of those values aren't recived it will return 0x80
+ * If true recived it will return 0xFF
+ * If false is  received it will return 0x00
+*/
+uint8_t ModbusRequestResponseParser::getWriteSingleCoilValue()
 {
     if(message[4]== 0xFF && message[5]==0x00){
-        return true;
+        return 0xFF;
     }else if(message[4]== 0x00 && message[5]==0x00){
-        return false;
+        return 0x00;
     }else{
-        throw INVALID_DATA_VALUE_EXCEPTION_CODE;
+        return 0x80;
     }
 }
 

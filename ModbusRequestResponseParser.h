@@ -18,7 +18,7 @@ public:
     uint16_t getNumberOfRegsOrCoils();
     uint8_t getByteCount();
     uint16_t getWriteSingleRegisterValue();
-    boolean getWriteSingleCoilValue();
+    uint8_t getWriteSingleCoilValue();
     uint16_t getInputRegistersValues(uint32_t index);
 
     boolean isItException();
