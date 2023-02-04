@@ -60,11 +60,11 @@ uint16_t ModbusRequestResponseParser::getWriteSingleRegisterValue()
 uint8_t ModbusRequestResponseParser::getWriteSingleCoilValue()
 {
     if(message[4]== 0xFF && message[5]==0x00){
-        return 0xFF;
+        return COIL_VALUE_SET;
     }else if(message[4]== 0x00 && message[5]==0x00){
-        return 0x00;
+        return COIL_VALUE_RESET;
     }else{
-        return 0x80;
+        return COIL_VALUE_ERROR;
     }
 }
 
