@@ -2,7 +2,7 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 
-const char* ssid = "mrez";
+char* ssid = "mrez";
 const char* password = "moes1379";
 const char* mqttServer = "mbr.atro1.com";
 const int mqttPort = 1883;
