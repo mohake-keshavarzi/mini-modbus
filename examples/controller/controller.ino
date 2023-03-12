@@ -28,7 +28,7 @@ void loop()
         Serial.println("New message");
         Serial2.readBytes(message, messageSize);
 
-        ModbusRequestResponseParser parser((uint8_t)MY_ID, message);
+        ModbusRequestResponseParser parser{(uint8_t)MY_ID, message};
         if (parser.getSlaveID() == MY_ID) {
             switch (parser.getFunctionCode()) {
             case WRITE_SINGLE_COIL_FUNCTIONCODE:
