@@ -2,21 +2,40 @@
 #include "FunctionCodes.h"
 #include "WordFunctions.h"
 
-ModbusResponseCreator::ModbusResponseCreator(boolean* coils_refrence,uint16_t coilsSize,
-    word* holdingRegisters_refrence,uint16_t holdingSize,
-    word* inputRegisters_refrence, uint16_t inputSize)
-:coils(coils_refrence),coilsSize(coilsSize),
-inputRegisters(inputRegisters_refrence),holdingRegsSize(holdingSize),
-holdingRegisters(holdingRegisters_refrence),inputRegsSize(inputSize)
+ModbusResponseCreator::ModbusResponseCreator()
 {
     message = new byte[8];
     message_size=8;
+    
 }
+
+
+void ModbusResponseCreator::setCoilsRefrence(boolean* coils_refrence, uint16_t size)
+{
+    this->coils=coils_refrence;
+    this->coilsSize=size;
+}
+void ModbusResponseCreator::setInputDiscretesRefrence(boolean* inputDiscretes_refrence, uint16_t size)
+{
+    this->inputDiscretes=inputDiscretes_refrence;
+    this->inputDiscretesSize=size;
+}
+void ModbusResponseCreator::setHoldingRegistersRefrence(word* holdingRegisters_refrence, uint16_t size)
+{
+    this->holdingRegisters=holdingRegisters_refrence;
+    this->holdingRegsSize=size;
+}
+void ModbusResponseCreator::setInputRegistersRefrence(word* inputRegisters_refrence, uint16_t size)
+{
+    this->inputRegisters=inputRegisters_refrence;
+    this->inputRegsSize=size;
+}
+
 
 /**
  * Returns 0 for INVALID_DATA_ADDRESS_EXCEPTION_CODE;
 */
-uint16_t ModbusResponseCreator::createReadCoilsResponse(uint16_t startAddress,uint16_t numberOfCoils)
+uint16_t ModbusResponseCreator::createReadCoilsResponse(uint16_t startAddress, uint16_t numberOfCoils)
 {
     //INVALID_DATA_ADDRESS_EXCEPTION_CODE;
     if(isDataAddressWrong(startAddress,numberOfCoils,COILS)){
