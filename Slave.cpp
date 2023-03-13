@@ -61,7 +61,7 @@ void Slave::execute()
 
         case WRITE_SINGLE_REGISTER_FUNCTIONCODE:
             if (responseCreator.isDataAddressWrong(parser.getAddress(), parser.getNumberOfRegsOrCoils(), COILS)) {
-                responseSize = responseCreator.createExceptionResponse(READ_INPUT_REGISTERS_FUNCTIONCODE, INVALID_DATA_ADDRESS_EXCEPTION_CODE);
+                responseSize = responseCreator.createExceptionResponse(WRITE_SINGLE_REGISTER_FUNCTIONCODE, INVALID_DATA_ADDRESS_EXCEPTION_CODE);
             } else {
                 responseSize = responseCreator.createWriteSingleRegisterResponse(parser.getAddress(), parser.getWriteSingleRegisterValue());
             }

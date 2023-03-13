@@ -2,6 +2,9 @@
 #include "WordFunctions.h"
 #include "FunctionCodes.h"
 
+
+//**************TODO: add data exists checking***********************//
+
 ModbusRequestResponseParser::ModbusRequestResponseParser(byte *message)
 :message{message}
 {
