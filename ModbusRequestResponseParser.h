@@ -10,7 +10,7 @@ private:
     byte *message;
     WordFunctions funcs{};
 public:
-    ModbusRequestResponseParser(uint8_t ID, byte *message);
+    ModbusRequestResponseParser(byte *message);
     void setMessage(byte *message){this->message=message;};
     uint8_t getSlaveID();
     uint8_t getFunctionCode();

@@ -2,15 +2,15 @@
 
 #define MY_ID 0x01
 #define NUM_OF_COILS 2
-#define NUM_OF_HOLDING_REGS 0
-#define NUM_OF_INPUT_REGS 0
+#define NUM_OF_HOLDING_REGS 1
+#define NUM_OF_INPUT_REGS 1
 
 byte message[256];
 
 boolean coils[NUM_OF_COILS] {};
 word holdingRegs[NUM_OF_HOLDING_REGS], inputRegs[NUM_OF_INPUT_REGS];
 
-ModbusResponseCreator myResponse(coils, NUM_OF_COILS, holdingRegs, NUM_OF_HOLDING_REGS, inputRegs, NUM_OF_INPUT_REGS);
+Slave miniModbusSlave{MY_ID,Serial};
 
 // ModbusRequestResponseParser parser(MY_ID
 void setup()
@@ -18,6 +18,10 @@ void setup()
     Serial2.begin(19200);
     Serial.begin(19200);
     pinMode(23, OUTPUT);
+
+    miniModbusSlave.setCoilsRefrence(coils,NUM_OF_COILS);
+    miniModbusSlave.setHoldingRegistersRefrence(holdingRegs,NUM_OF_HOLDING_REGS);
+    miniModbusSlave.setInputRegistersRefrence(inputRegs,NUM_OF_INPUT_REGS);
 }
 
 void loop()

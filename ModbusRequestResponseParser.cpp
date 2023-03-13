@@ -2,7 +2,7 @@
 #include "WordFunctions.h"
 #include "FunctionCodes.h"
 
-ModbusRequestResponseParser::ModbusRequestResponseParser(uint8_t ID, byte *message)
+ModbusRequestResponseParser::ModbusRequestResponseParser(byte *message)
 :message{message}
 {
 }
