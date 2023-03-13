@@ -1,12 +1,11 @@
 #include "ModbusRequestResponseParser.h"
-#include "WordFunctions.h"
 #include "FunctionCodes.h"
-
+#include "WordFunctions.h"
 
 //**************TODO: add data exists checking***********************//
 
-ModbusRequestResponseParser::ModbusRequestResponseParser(byte *message)
-:message{message}
+ModbusRequestResponseParser::ModbusRequestResponseParser(byte* message)
+    : message { message }
 {
 }
 
@@ -17,12 +16,12 @@ uint8_t ModbusRequestResponseParser::getFunctionCode()
 
 boolean ModbusRequestResponseParser::isItException()
 {
-    return getFunctionCode()>0x80;
+    return getFunctionCode() > 0x80;
 }
 
 uint8_t ModbusRequestResponseParser::getExceptionCode()
 {
-    if(isItException()){
+    if (isItException()) {
         return message[2];
     }
     return 0;
@@ -35,23 +34,27 @@ uint8_t ModbusRequestResponseParser::getSlaveID()
 
 uint16_t ModbusRequestResponseParser::getAddress()
 {
-    return  funcs.MSBLSBJoin(message[2],message[3]);
+    return funcs.MSBLSBJoin(message[2], message[3]);
 }
 
 uint16_t ModbusRequestResponseParser::getNumberOfRegsOrCoils()
 {
-    return  funcs.MSBLSBJoin(message[4],message[5]);
+    return funcs.MSBLSBJoin(message[4], message[5]);
 }
 
-uint8_t ModbusRequestResponseParser::getByteCount()
+uint8_t ModbusRequestResponseParser::getByteCountInReponse()
 {
     return message[2];
-
 }
- 
+
+uint8_t ModbusRequestResponseParser::getByteCountInRequest()
+{
+    return message[6];
+}
+
 uint16_t ModbusRequestResponseParser::getWriteSingleRegisterValue()
 {
-    return  funcs.MSBLSBJoin(message[4],message[5]);
+    return funcs.MSBLSBJoin(message[4], message[5]);
 }
 
 /**
@@ -59,22 +62,40 @@ uint16_t ModbusRequestResponseParser::getWriteSingleRegisterValue()
  * If none of those values aren't recived it will return 0x80
  * If true recived it will return 0xFF
  * If false is  received it will return 0x00
-*/
+ */
 uint8_t ModbusRequestResponseParser::getWriteSingleCoilValue()
 {
-    if(message[4]== 0xFF && message[5]==0x00){
+    if (message[4] == 0xFF && message[5] == 0x00) {
         return COIL_VALUE_SET;
-    }else if(message[4]== 0x00 && message[5]==0x00){
+    } else if (message[4] == 0x00 && message[5] == 0x00) {
         return COIL_VALUE_RESET;
-    }else{
+    } else {
         return COIL_VALUE_ERROR;
     }
 }
 
-uint16_t ModbusRequestResponseParser::getInputRegistersValues(uint32_t index)
-{   
-        return funcs.MSBLSBJoin(message[3+2*index],message[4+2*index]);
+uint16_t ModbusRequestResponseParser::getRegisterValueByIndexInResponse(uint32_t index)
+{
+    return funcs.MSBLSBJoin(message[3 + 2 * index], message[4 + 2 * index]);
+}
+
+uint16_t ModbusRequestResponseParser::getRegisterValueByIndexInRequest(uint32_t index)
+{
+    return funcs.MSBLSBJoin(message[7 + 2 * index], message[8 + 2 * index]);
+}
+
+boolean ModbusRequestResponseParser::getDiscreteInputOrCoilValueByIndexInResponse(uint32_t index)
+{
+    byte b = message[3 + index / 8];
+    return (b >> (index % 8)) & 0x01;
+}
+
+boolean ModbusRequestResponseParser::getDiscreteInputOrCoilValueByIndexInRequest(uint32_t index)
+{
+    byte b = message[7 + index / 8];
+    return (b >> (index % 8)) & 0x01;
 }
 
 ModbusRequestResponseParser::~ModbusRequestResponseParser()
-{}
+{
+}

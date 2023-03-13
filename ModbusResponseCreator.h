@@ -3,6 +3,7 @@
 
 #include "Arduino.h"
 #include "WordFunctions.h"
+#include "FunctionCodes.h"
 
 class ModbusResponseCreator
 {
@@ -14,6 +15,11 @@ private:
     uint16_t message_size;
 
     WordFunctions funcs{};
+
+    uint16_t createReadCoilsOrDiscreteInputsResponse(uint16_t startAddress,uint16_t quantity, uint8_t type);
+    uint16_t createReadHoldingOrInputRegistersResponse(uint16_t startAddress,uint16_t numOfRegisters,uint8_t type);
+
+
 public:
     ModbusResponseCreator();
 
@@ -23,9 +29,25 @@ public:
     void setInputRegistersRefrence(word* inputRegisters_refrence, uint16_t size);
 
     
-    uint16_t createReadCoilsResponse(uint16_t startAddress,uint16_t numberOfCoils);
+
+    uint16_t createReadCoilsResponse(uint16_t startAddress,uint16_t quantity){
+        return createReadCoilsOrDiscreteInputsResponse(startAddress,quantity,COILS);
+    };
+    uint16_t createReadDiscreteInputsResponse(uint16_t startAddress,uint16_t quantity){
+        return createReadCoilsOrDiscreteInputsResponse(startAddress,quantity,DISCRETE_INPUTS);
+    };
+
     uint16_t createWriteSingleRegisterResponse(uint16_t address,word value);
-    uint16_t createReadInputRegistersResponse(uint16_t startAddress,uint16_t numOfRegisters);
+
+
+    uint16_t createReadInputRegistersResponse(uint16_t startAddress,uint16_t numOfRegisters){
+        return createReadHoldingOrInputRegistersResponse(startAddress,numOfRegisters,INPUT_REGISTERS);
+    };
+    uint16_t createReadHoldingRegistersResponse(uint16_t startAddress,uint16_t numOfRegisters){
+        return createReadHoldingOrInputRegistersResponse(startAddress,numOfRegisters,HOLDING_REGISTERS);
+    };
+
+
     uint16_t createWriteSingleCoilResponse(uint16_t address,boolean value);
 
     uint16_t createExceptionResponse(uint8_t functionCode,uint8_t exceptionCode);
