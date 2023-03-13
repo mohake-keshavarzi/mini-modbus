@@ -60,10 +60,18 @@ void Slave::execute()
             break;
 
         case WRITE_SINGLE_REGISTER_FUNCTIONCODE:
-            if (responseCreator.isDataAddressWrong(parser.getAddress(), parser.getNumberOfRegsOrCoils(), COILS)) {
+            if (responseCreator.isDataAddressWrong(parser.getAddress(), 0, HOLDING_REGISTERS)) {
                 responseSize = responseCreator.createExceptionResponse(WRITE_SINGLE_REGISTER_FUNCTIONCODE, INVALID_DATA_ADDRESS_EXCEPTION_CODE);
             } else {
                 responseSize = responseCreator.createWriteSingleRegisterResponse(parser.getAddress(), parser.getWriteSingleRegisterValue());
+            }
+            break;
+
+        case READ_COILS_FUNCTIONCODE:
+            if (responseCreator.isDataAddressWrong(parser.getAddress(), parser.getNumberOfRegsOrCoils(), COILS)) {
+                responseSize = responseCreator.createExceptionResponse(READ_COILS_FUNCTIONCODE, INVALID_DATA_ADDRESS_EXCEPTION_CODE);
+            } else {
+                responseSize = responseCreator.createReadCoilsResponse(parser.getAddress(), parser.getNumberOfRegsOrCoils());
             }
             break;
 
