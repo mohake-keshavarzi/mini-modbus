@@ -10,7 +10,7 @@ private:
     byte *message;
     WordFunctions funcs{};
 
-    boolean* coilOrDiscreteInputValues;
+    boolean* digitalValues;
     word* registerValues;
 public:
     ModbusRequestResponseParser(byte *message);
@@ -18,7 +18,7 @@ public:
     uint8_t getSlaveID();
     uint8_t getFunctionCode();
     uint16_t getAddress();
-    uint16_t getNumberOfRegsOrCoils();
+    uint16_t getNumberOfRegsOrDigitals();
     uint8_t getByteCountInReponse();
     uint8_t getByteCountInRequest();
     uint16_t getWriteSingleRegisterValue();
@@ -29,10 +29,10 @@ public:
     
     
 
-    boolean getDiscreteInputOrCoilValueByIndexInResponse(uint32_t index);
-    boolean getDiscreteInputOrCoilValueByIndexInRequest(uint32_t index);
+    boolean getDigitalValueByIndexInResponse(uint32_t index);
+    boolean getDigitalValueByIndexInRequest(uint32_t index);
 
-    boolean* getCoilOrDiscreteInputValuesArray();
+    boolean* getDigitalValuesArray();
     word* getRegisterValuesArray();
 
     boolean isItException();

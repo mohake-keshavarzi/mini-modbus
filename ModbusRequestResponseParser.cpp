@@ -37,7 +37,7 @@ uint16_t ModbusRequestResponseParser::getAddress()
     return funcs.MSBLSBJoin(message[2], message[3]);
 }
 
-uint16_t ModbusRequestResponseParser::getNumberOfRegsOrCoils()
+uint16_t ModbusRequestResponseParser::getNumberOfRegsOrDigitals()
 {
     return funcs.MSBLSBJoin(message[4], message[5]);
 }
@@ -84,42 +84,42 @@ uint16_t ModbusRequestResponseParser::getRegisterValueByIndexInRequest(uint32_t 
     return funcs.MSBLSBJoin(message[7 + 2 * index], message[8 + 2 * index]);
 }
 
-boolean ModbusRequestResponseParser::getDiscreteInputOrCoilValueByIndexInResponse(uint32_t index)
+boolean ModbusRequestResponseParser::getDigitalValueByIndexInResponse(uint32_t index)
 {
     byte b = message[3 + index / 8];
     return (b >> (index % 8)) & 0x01;
 }
 
-boolean ModbusRequestResponseParser::getDiscreteInputOrCoilValueByIndexInRequest(uint32_t index)
+boolean ModbusRequestResponseParser::getDigitalValueByIndexInRequest(uint32_t index)
 {
     byte b = message[7 + index / 8];
     return (b >> (index % 8)) & 0x01;
 }
 
-boolean* ModbusRequestResponseParser::getCoilOrDiscreteInputValuesArray()
+boolean* ModbusRequestResponseParser::getDigitalValuesArray()
 {
-    delete[] coilOrDiscreteInputValues;
+    delete[] digitalValues;
     int count = 0;
     switch (getFunctionCode()) {
     case READ_COILS_FUNCTIONCODE:
     case READ_DISCRETE_INPUTS_FUNCTIONCODE:
         count = getByteCountInReponse() * 8;
-        coilOrDiscreteInputValues = new boolean[count];
+        digitalValues = new boolean[count];
         for (int i { 0 }; i < count; i++)
-            coilOrDiscreteInputValues[i] = getDiscreteInputOrCoilValueByIndexInResponse(i);
+            digitalValues[i] = getDigitalValueByIndexInResponse(i);
         break;
     case WRITE_MULTIPLE_COILS_FUNCTIONCODE:
         count = getByteCountInRequest() * 8;
-        coilOrDiscreteInputValues = new boolean[count];
+        digitalValues = new boolean[count];
         for (int i { 0 }; i < count; i++)
-            coilOrDiscreteInputValues[i] = getDiscreteInputOrCoilValueByIndexInRequest(i);
+            digitalValues[i] = getDigitalValueByIndexInRequest(i);
         break;
 
     default:
-        coilOrDiscreteInputValues = nullptr;
+        digitalValues = nullptr;
         break;
     }
-    return coilOrDiscreteInputValues;
+    return digitalValues;
 }
 
 word* ModbusRequestResponseParser::getRegisterValuesArray()
@@ -150,6 +150,6 @@ word* ModbusRequestResponseParser::getRegisterValuesArray()
 
 ModbusRequestResponseParser::~ModbusRequestResponseParser()
 {
-    delete[] coilOrDiscreteInputValues;
+    delete[] digitalValues;
     delete[] registerValues;
 }

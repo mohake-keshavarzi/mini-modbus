@@ -52,10 +52,10 @@ void Slave::execute()
             break;
 
         case READ_INPUT_REGISTERS_FUNCTIONCODE:
-            if (responseCreator.isDataAddressWrong(parser.getAddress(), parser.getNumberOfRegsOrCoils(), INPUT_REGISTERS)) {
+            if (responseCreator.isDataAddressWrong(parser.getAddress(), parser.getNumberOfRegsOrDigitals(), INPUT_REGISTERS)) {
                 responseSize = responseCreator.createExceptionResponse(READ_INPUT_REGISTERS_FUNCTIONCODE, INVALID_DATA_ADDRESS_EXCEPTION_CODE);
             } else {
-                responseSize = responseCreator.createReadInputRegistersResponse(parser.getAddress(), parser.getNumberOfRegsOrCoils());
+                responseSize = responseCreator.createReadInputRegistersResponse(parser.getAddress(), parser.getNumberOfRegsOrDigitals());
             }
             break;
 
@@ -68,43 +68,43 @@ void Slave::execute()
             break;
 
         case READ_COILS_FUNCTIONCODE:
-            if (responseCreator.isDataAddressWrong(parser.getAddress(), parser.getNumberOfRegsOrCoils(), COILS)) {
+            if (responseCreator.isDataAddressWrong(parser.getAddress(), parser.getNumberOfRegsOrDigitals(), COILS)) {
                 responseSize = responseCreator.createExceptionResponse(READ_COILS_FUNCTIONCODE, INVALID_DATA_ADDRESS_EXCEPTION_CODE);
             } else {
-                responseSize = responseCreator.createReadCoilsResponse(parser.getAddress(), parser.getNumberOfRegsOrCoils());
+                responseSize = responseCreator.createReadCoilsResponse(parser.getAddress(), parser.getNumberOfRegsOrDigitals());
             }
             break;
 
         /////////////
         case WRITE_MULTIPLE_REGISTERS_FUNCTIONCODE:
-            if (responseCreator.isDataAddressWrong(parser.getAddress(), parser.getNumberOfRegsOrCoils(), HOLDING_REGISTERS)) {
+            if (responseCreator.isDataAddressWrong(parser.getAddress(), parser.getNumberOfRegsOrDigitals(), HOLDING_REGISTERS)) {
                 responseSize = responseCreator.createExceptionResponse(WRITE_MULTIPLE_REGISTERS_FUNCTIONCODE, INVALID_DATA_ADDRESS_EXCEPTION_CODE);
             } else {
-                responseSize = responseCreator.createWriteMultipleRegistersResponse(parser.getAddress(), parser.getNumberOfRegsOrCoils(), parser.getWriteMultipleRegistersValues());
+                responseSize = responseCreator.createWriteRegistersResponse(parser.getAddress(), parser.getRegisterValuesArray(), parser.getNumberOfRegsOrDigitals());
             }
             break;
 
         case READ_DISCRETE_INPUTS_FUNCTIONCODE:
-            if (responseCreator.isDataAddressWrong(parser.getAddress(), parser.getNumberOfRegsOrCoils(), DISCRETE_INPUTS)) {
+            if (responseCreator.isDataAddressWrong(parser.getAddress(), parser.getNumberOfRegsOrDigitals(), DISCRETE_INPUTS)) {
                 responseSize = responseCreator.createExceptionResponse(READ_DISCRETE_INPUTS_FUNCTIONCODE, INVALID_DATA_ADDRESS_EXCEPTION_CODE);
             } else {
-                responseSize = responseCreator.createReadDiscreteInputsResponse(parser.getAddress(), parser.getNumberOfRegsOrCoils());
+                responseSize = responseCreator.createReadDiscreteInputsResponse(parser.getAddress(), parser.getNumberOfRegsOrDigitals());
             }
             break;
 
         case WRITE_MULTIPLE_COILS_FUNCTIONCODE:
-            if (responseCreator.isDataAddressWrong(parser.getAddress(), parser.getNumberOfRegsOrCoils(), COILS)) {
+            if (responseCreator.isDataAddressWrong(parser.getAddress(), parser.getNumberOfRegsOrDigitals(), COILS)) {
                 responseSize = responseCreator.createExceptionResponse(WRITE_MULTIPLE_COILS_FUNCTIONCODE, INVALID_DATA_ADDRESS_EXCEPTION_CODE);
             } else {
-                responseSize = responseCreator.createWriteMultipleCoilsResponse(parser.getAddress(), parser.getNumberOfRegsOrCoils(), parser.getWriteMultipleCoilsValues());
+                responseSize = responseCreator.createWriteCoilsResponse(parser.getAddress(), parser.getDigitalValuesArray(), parser.getNumberOfRegsOrDigitals());
             }
             break;
 
         case READ_HOLDING_REGISTERS_FUNCTIONCODE:
-            if (responseCreator.isDataAddressWrong(parser.getAddress(), parser.getNumberOfRegsOrCoils(), HOLDING_REGISTERS)) {
+            if (responseCreator.isDataAddressWrong(parser.getAddress(), parser.getNumberOfRegsOrDigitals(), HOLDING_REGISTERS)) {
                 responseSize = responseCreator.createExceptionResponse(READ_HOLDING_REGISTERS_FUNCTIONCODE, INVALID_DATA_ADDRESS_EXCEPTION_CODE);
             } else {
-                responseSize = responseCreator.createReadHoldingRegistersResponse(parser.getAddress(), parser.getNumberOfRegsOrCoils());
+                responseSize = responseCreator.createReadHoldingRegistersResponse(parser.getAddress(), parser.getNumberOfRegsOrDigitals());
             }
             break;
             ////////////////

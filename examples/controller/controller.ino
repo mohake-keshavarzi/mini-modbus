@@ -52,10 +52,10 @@ void loop()
                 break;
             case READ_INPUT_REGISTERS_FUNCTIONCODE:
                 Serial.println("READ INPUT REGISTERS REQUEST");
-                if (myResponse.isDataAddressWrong(parser.getAddress(), parser.getNumberOfRegsOrCoils(), INPUT_REGISTERS)) {
+                if (myResponse.isDataAddressWrong(parser.getAddress(), parser.getNumberOfRegsOrDigitals(), INPUT_REGISTERS)) {
                     responseSize = myResponse.createExceptionResponse(READ_INPUT_REGISTERS_FUNCTIONCODE, INVALID_DATA_ADDRESS_EXCEPTION_CODE);
                 } else {
-                    responseSize = myResponse.createReadInputRegistersResponse(parser.getAddress(), parser.getNumberOfRegsOrCoils());
+                    responseSize = myResponse.createReadInputRegistersResponse(parser.getAddress(), parser.getNumberOfRegsOrDigitals());
                 }
 
                 for (int i { 0 }; i < responseSize; i++) {
