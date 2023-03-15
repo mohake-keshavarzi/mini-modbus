@@ -50,6 +50,11 @@ public:
 
     uint16_t createWriteSingleCoilResponse(uint16_t address,boolean value);
 
+    uint16_t createWriteCoilsResponse(uint16_t startAddress,boolean* values,uint16_t quantity);
+
+    uint16_t createWriteRegistersResponse(uint16_t startAddress,word* values,uint16_t quantity);
+
+
     uint16_t createExceptionResponse(uint8_t functionCode,uint8_t exceptionCode);
 
     boolean isDataAddressWrong(uint16_t startAddress,uint16_t numberOfCoilsOrRegisters,uint8_t typeOfMemory);

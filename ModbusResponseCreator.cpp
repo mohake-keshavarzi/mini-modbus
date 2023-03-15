@@ -191,6 +191,56 @@ uint16_t ModbusResponseCreator::createWriteSingleCoilResponse(uint16_t address, 
     return message_size;
 }
 
+uint16_t ModbusResponseCreator::createWriteCoilsResponse(uint16_t startAddress, boolean* values, uint16_t quantity)
+{
+    if (isDataAddressWrong(startAddress, quantity, COILS)) {
+        return 0;
+    }
+    delete[] message;
+    // size is master id + function code + start address + quantitiy of written coils = 1+1+2+2=6
+    message_size = 6;
+    message = new byte[message_size];
+
+    message[0] = MASTER_ID;
+    message[1] = WRITE_MULTIPLE_COILS_FUNCTIONCODE;
+    message[2] = funcs.getMSByte(startAddress);
+    message[3] = funcs.getLSByte(startAddress);
+    message[4] = funcs.getMSByte(quantity);
+    message[5] = funcs.getLSByte(quantity);
+
+    for(int i{0};i<quantity;i++){
+        coils[i]=values[i];
+    }
+
+    return message_size;
+
+}
+
+uint16_t ModbusResponseCreator::createWriteRegistersResponse(uint16_t startAddress, word* values, uint16_t quantity)
+{
+    if (isDataAddressWrong(startAddress, quantity, HOLDING_REGISTERS)) {
+        return 0;
+    }
+    delete[] message;
+    // size is master id + function code + start address + quantitiy of written coils = 1+1+2+2=6
+    message_size = 6;
+    message = new byte[message_size];
+
+    message[0] = MASTER_ID;
+    message[1] = WRITE_MULTIPLE_REGISTERS_FUNCTIONCODE;
+    message[2] = funcs.getMSByte(startAddress);
+    message[3] = funcs.getLSByte(startAddress);
+    message[4] = funcs.getMSByte(quantity);
+    message[5] = funcs.getLSByte(quantity);
+
+    for(int i{0};i<quantity;i++){
+        holdingRegisters[i]=values[i];
+    }
+
+    return message_size;
+
+}
+
 uint16_t ModbusResponseCreator::createExceptionResponse(uint8_t functionCode, uint8_t exceptionCode)
 {
     delete[] message;

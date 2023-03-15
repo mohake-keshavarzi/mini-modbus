@@ -9,6 +9,9 @@ class ModbusRequestResponseParser
 private:
     byte *message;
     WordFunctions funcs{};
+
+    boolean* coilOrDiscreteInputValues;
+    word* registerValues;
 public:
     ModbusRequestResponseParser(byte *message);
     void setMessage(byte *message){this->message=message;};
@@ -28,6 +31,9 @@ public:
 
     boolean getDiscreteInputOrCoilValueByIndexInResponse(uint32_t index);
     boolean getDiscreteInputOrCoilValueByIndexInRequest(uint32_t index);
+
+    boolean* getCoilOrDiscreteInputValuesArray();
+    word* getRegisterValuesArray();
 
     boolean isItException();
     uint8_t getExceptionCode();

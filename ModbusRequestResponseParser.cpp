@@ -96,6 +96,60 @@ boolean ModbusRequestResponseParser::getDiscreteInputOrCoilValueByIndexInRequest
     return (b >> (index % 8)) & 0x01;
 }
 
+boolean* ModbusRequestResponseParser::getCoilOrDiscreteInputValuesArray()
+{
+    delete[] coilOrDiscreteInputValues;
+    int count = 0;
+    switch (getFunctionCode()) {
+    case READ_COILS_FUNCTIONCODE:
+    case READ_DISCRETE_INPUTS_FUNCTIONCODE:
+        count = getByteCountInReponse() * 8;
+        coilOrDiscreteInputValues = new boolean[count];
+        for (int i { 0 }; i < count; i++)
+            coilOrDiscreteInputValues[i] = getDiscreteInputOrCoilValueByIndexInResponse(i);
+        break;
+    case WRITE_MULTIPLE_COILS_FUNCTIONCODE:
+        count = getByteCountInRequest() * 8;
+        coilOrDiscreteInputValues = new boolean[count];
+        for (int i { 0 }; i < count; i++)
+            coilOrDiscreteInputValues[i] = getDiscreteInputOrCoilValueByIndexInRequest(i);
+        break;
+
+    default:
+        coilOrDiscreteInputValues = nullptr;
+        break;
+    }
+    return coilOrDiscreteInputValues;
+}
+
+word* ModbusRequestResponseParser::getRegisterValuesArray()
+{
+    delete[] registerValues;
+    int count = 0;
+    switch (getFunctionCode()) {
+    case READ_HOLDING_REGISTERS_FUNCTIONCODE:
+    case READ_INPUT_REGISTERS_FUNCTIONCODE:
+        count = getByteCountInReponse() / 2;
+        registerValues = new word[count];
+        for (int i { 0 }; i < count; i++)
+            registerValues[i] = getRegisterValueByIndexInResponse(i);
+        break;
+    case WRITE_MULTIPLE_REGISTERS_FUNCTIONCODE:
+        count = getByteCountInRequest() / 2;
+        registerValues = new word[count];
+        for (int i { 0 }; i < count; i++)
+            registerValues[i] = getRegisterValueByIndexInRequest(i);
+        break;
+
+    default:
+        registerValues = nullptr;
+        break;
+    }
+    return registerValues;
+}
+
 ModbusRequestResponseParser::~ModbusRequestResponseParser()
 {
+    delete[] coilOrDiscreteInputValues;
+    delete[] registerValues;
 }
