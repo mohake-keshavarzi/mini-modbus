@@ -59,7 +59,7 @@ uint16_t ModbusResponseCreator::createReadCoilsOrDiscreteInputsResponse(uint16_t
     if (quantity % 8 != 0)
         byteCount++;
 
-    message += byteCount;
+    message_size += byteCount;
     message = new byte[message_size];
 
     message[0] = MASTER_ID;

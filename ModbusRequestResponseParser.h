@@ -10,7 +10,7 @@ private:
     byte *message;
     WordFunctions funcs{};
 
-    boolean* digitalValues;
+    boolean* digitalValues;  //Digital value refers to both coil and Discrete input values
     word* registerValues;
 public:
     ModbusRequestResponseParser(byte *message);
