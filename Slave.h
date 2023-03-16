@@ -19,7 +19,7 @@ public:
     Slave(uint16_t id,Stream &s);
 
     void setCoilsRefrence(boolean* coilsArray,uint16_t size);
-    void setInputDiscretesRefrence(boolean* inputDiscretesArray,uint16_t size);
+    void setDiscreteInputsRefrence(boolean* inputDiscretesArray,uint16_t size);
     void setHoldingRegistersRefrence(word* holdingRegistersArray,uint16_t size);
     void setInputRegistersRefrence(word* inputRegistersArray,uint16_t size);
 

@@ -12,10 +12,10 @@ void ModbusResponseCreator::setCoilsRefrence(boolean* coils_refrence, uint16_t s
     this->coils = coils_refrence;
     this->coilsSize = size;
 }
-void ModbusResponseCreator::setInputDiscretesRefrence(boolean* inputDiscretes_refrence, uint16_t size)
+void ModbusResponseCreator::setDiscreteInputsRefrence(boolean* inputDiscretes_refrence, uint16_t size)
 {
-    this->inputDiscretes = inputDiscretes_refrence;
-    this->inputDiscretesSize = size;
+    this->discreteInputs = inputDiscretes_refrence;
+    this->discreteInputsSize = size;
 }
 void ModbusResponseCreator::setHoldingRegistersRefrence(word* holdingRegisters_refrence, uint16_t size)
 {
@@ -41,7 +41,7 @@ uint16_t ModbusResponseCreator::createReadCoilsOrDiscreteInputsResponse(uint16_t
             functionCode = READ_COILS_FUNCTIONCODE;
             break;
         case DISCRETE_INPUTS:
-            refrence=inputDiscretes;
+            refrence=discreteInputs;
             functionCode= READ_DISCRETE_INPUTS_FUNCTIONCODE;
             break;
         default: //Invalid Type

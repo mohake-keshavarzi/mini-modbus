@@ -11,9 +11,9 @@ void Slave::setCoilsRefrence(boolean* coilsArray, uint16_t size)
     responseCreator.setCoilsRefrence(coilsArray, size);
 }
 
-void Slave::setInputDiscretesRefrence(boolean* inputDiscretesArray, uint16_t size)
+void Slave::setDiscreteInputsRefrence(boolean* inputDiscretesArray, uint16_t size)
 {
-    responseCreator.setInputDiscretesRefrence(inputDiscretesArray, size);
+    responseCreator.setDiscreteInputsRefrence(inputDiscretesArray, size);
 }
 
 void Slave::setHoldingRegistersRefrence(word* holdingRegistersArray, uint16_t size)
