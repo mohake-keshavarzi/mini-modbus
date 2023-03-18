@@ -43,9 +43,12 @@ void Slave::execute()
                 responseSize = responseCreator.createExceptionResponse(WRITE_SINGLE_COIL_FUNCTIONCODE, INVALID_DATA_ADDRESS_EXCEPTION_CODE);
             } else {
                 uint8_t coil_value = parser.getWriteSingleCoilValue();
-                if (coil_value != COIL_VALUE_ERROR)
-                    responseSize = responseCreator.createWriteSingleCoilResponse(parser.getAddress(), coil_value == COIL_VALUE_SET);
-                else
+                if (coil_value != COIL_VALUE_ERROR) {
+                    boolean value = (coil_value == COIL_VALUE_SET);
+                    responseSize = responseCreator.createWriteSingleCoilResponse(parser.getAddress(), value);
+                    if (onWriteDigitalfunc != nullptr)
+                        onWriteDigitalfunc(COILS, parser.getAddress(), &(value), 0);
+                } else
                     responseSize = responseCreator.createExceptionResponse(WRITE_SINGLE_COIL_FUNCTIONCODE, INVALID_DATA_VALUE_EXCEPTION_CODE);
             }
 
@@ -56,6 +59,8 @@ void Slave::execute()
                 responseSize = responseCreator.createExceptionResponse(READ_INPUT_REGISTERS_FUNCTIONCODE, INVALID_DATA_ADDRESS_EXCEPTION_CODE);
             } else {
                 responseSize = responseCreator.createReadInputRegistersResponse(parser.getAddress(), parser.getNumberOfRegsOrDigitals());
+                if (onReadRegisterfunc != nullptr)
+                    onReadRegisterfunc(INPUT_REGISTERS, parser.getAddress(), parser.getNumberOfRegsOrDigitals());
             }
             break;
 
@@ -63,7 +68,10 @@ void Slave::execute()
             if (responseCreator.isDataAddressWrong(parser.getAddress(), 0, HOLDING_REGISTERS)) {
                 responseSize = responseCreator.createExceptionResponse(WRITE_SINGLE_REGISTER_FUNCTIONCODE, INVALID_DATA_ADDRESS_EXCEPTION_CODE);
             } else {
-                responseSize = responseCreator.createWriteSingleRegisterResponse(parser.getAddress(), parser.getWriteSingleRegisterValue());
+                word value = parser.getWriteSingleRegisterValue();
+                responseSize = responseCreator.createWriteSingleRegisterResponse(parser.getAddress(), value);
+                if (onWriteRegisterfunc != nullptr)
+                    onWriteRegisterfunc(HOLDING_REGISTERS, parser.getAddress(), &value, 0);
             }
             break;
 
@@ -72,6 +80,8 @@ void Slave::execute()
                 responseSize = responseCreator.createExceptionResponse(READ_COILS_FUNCTIONCODE, INVALID_DATA_ADDRESS_EXCEPTION_CODE);
             } else {
                 responseSize = responseCreator.createReadCoilsResponse(parser.getAddress(), parser.getNumberOfRegsOrDigitals());
+                if (onReadDigitalfunc != nullptr)
+                    onReadDigitalfunc(COILS, parser.getAddress(), parser.getNumberOfRegsOrDigitals());
             }
             break;
 
@@ -80,7 +90,10 @@ void Slave::execute()
             if (responseCreator.isDataAddressWrong(parser.getAddress(), parser.getNumberOfRegsOrDigitals(), HOLDING_REGISTERS)) {
                 responseSize = responseCreator.createExceptionResponse(WRITE_MULTIPLE_REGISTERS_FUNCTIONCODE, INVALID_DATA_ADDRESS_EXCEPTION_CODE);
             } else {
-                responseSize = responseCreator.createWriteRegistersResponse(parser.getAddress(), parser.getRegisterValuesArray(), parser.getNumberOfRegsOrDigitals());
+                word* values { parser.getRegisterValuesArray() };
+                responseSize = responseCreator.createWriteRegistersResponse(parser.getAddress(), values, parser.getNumberOfRegsOrDigitals());
+                if (onWriteRegisterfunc != nullptr)
+                    onWriteRegisterfunc(HOLDING_REGISTERS, parser.getAddress(), values, parser.getNumberOfRegsOrDigitals());
             }
             break;
 
@@ -89,6 +102,8 @@ void Slave::execute()
                 responseSize = responseCreator.createExceptionResponse(READ_DISCRETE_INPUTS_FUNCTIONCODE, INVALID_DATA_ADDRESS_EXCEPTION_CODE);
             } else {
                 responseSize = responseCreator.createReadDiscreteInputsResponse(parser.getAddress(), parser.getNumberOfRegsOrDigitals());
+                if (onReadDigitalfunc != nullptr)
+                    onReadDigitalfunc(DISCRETE_INPUTS, parser.getAddress(), parser.getNumberOfRegsOrDigitals());
             }
             break;
 
@@ -96,7 +111,10 @@ void Slave::execute()
             if (responseCreator.isDataAddressWrong(parser.getAddress(), parser.getNumberOfRegsOrDigitals(), COILS)) {
                 responseSize = responseCreator.createExceptionResponse(WRITE_MULTIPLE_COILS_FUNCTIONCODE, INVALID_DATA_ADDRESS_EXCEPTION_CODE);
             } else {
-                responseSize = responseCreator.createWriteCoilsResponse(parser.getAddress(), parser.getDigitalValuesArray(), parser.getNumberOfRegsOrDigitals());
+                boolean* values { parser.getDigitalValuesArray() };
+                responseSize = responseCreator.createWriteCoilsResponse(parser.getAddress(), values, parser.getNumberOfRegsOrDigitals());
+                if (onWriteDigitalfunc != nullptr)
+                    onWriteDigitalfunc(COILS, parser.getAddress(), values, parser.getNumberOfRegsOrDigitals());
             }
             break;
 
@@ -105,6 +123,8 @@ void Slave::execute()
                 responseSize = responseCreator.createExceptionResponse(READ_HOLDING_REGISTERS_FUNCTIONCODE, INVALID_DATA_ADDRESS_EXCEPTION_CODE);
             } else {
                 responseSize = responseCreator.createReadHoldingRegistersResponse(parser.getAddress(), parser.getNumberOfRegsOrDigitals());
+                if (onReadRegisterfunc != nullptr)
+                    onReadRegisterfunc(HOLDING_REGISTERS, parser.getAddress(), parser.getNumberOfRegsOrDigitals());
             }
             break;
             ////////////////
@@ -118,6 +138,26 @@ void Slave::execute()
     serial.flush();
     messageSize = 0;
     delay(10);
+}
+
+void Slave::setOnReadRegisterRequestFunction(void (*func)(int type, word startingAddress, int quantity))
+{
+    onReadRegisterfunc = func;
+}
+
+void Slave::setOnWriteRegisterRequestFunction(void (*func)(int type, word startingAddress, word* values, int quantity))
+{
+    onWriteRegisterfunc = func;
+}
+
+void Slave::setOnReadDigitalRequestFunction(void (*func)(int type, word startingAddress, int quantity))
+{
+    onReadDigitalfunc = func;
+}
+
+void Slave::setOnWriteDigitalRequestFunction(void (*func)(int type, word startingAddress, boolean* values, int quantity))
+{
+    onWriteDigitalfunc = func;
 }
 
 Slave::~Slave()

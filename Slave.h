@@ -14,7 +14,13 @@ private:
 
     ModbusResponseCreator responseCreator{};
     ModbusRequestResponseParser parser{nullptr};
-    
+
+    void (*onReadRegisterfunc)(int type,word startingAddress, int quantity) {nullptr};
+    void (*onWriteRegisterfunc)(int type,word startingAddress ,word* values, int quantity) {nullptr};
+
+    void (*onReadDigitalfunc)(int type,word startingAddress, int quantity) {nullptr};
+    void (*onWriteDigitalfunc)(int type,word startingAddress ,boolean* values, int quantity) {nullptr};
+
 public:
     Slave(uint16_t id,Stream &s);
 
@@ -25,8 +31,11 @@ public:
 
     void execute();
 
-    void setOnReadRequestFunction(void func(int type,word startingAddress ,byte* values, int quantity) );
-    void setOnWriteRequestFunction(void func(int type,word startingAddress, byte* values, int quantity) );
+    void setOnReadRegisterRequestFunction(void (*func)(int type,word startingAddress, int quantity) );
+    void setOnWriteRegisterRequestFunction(void (*func)(int type,word startingAddress, word* values, int quantity) );
+    void setOnReadDigitalRequestFunction(void (*func)(int type,word startingAddress , int quantity) );
+    void setOnWriteDigitalRequestFunction(void (*func)(int type,word startingAddress, boolean* values, int quantity) );
+
 
     byte* getMessage(){return message;}
 
