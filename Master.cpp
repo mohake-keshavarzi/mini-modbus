@@ -1,6 +1,7 @@
 #include "Master.h"
 
-master::master(Stream& s): serial ( s )
+master::master(Stream& s)
+    : serial(s)
 {
 }
 
@@ -23,17 +24,17 @@ boolean master::writeSingleCoil(byte slaveID, word address, boolean value)
             continue;
         serial.readBytes(message, responseSize);
         parser.setMessage(message);
-        if(messageIsInvalid(parser,MASTER_ID,WRITE_SINGLE_COIL_FUNCTIONCODE))
+        if (messageIsInvalid(parser, MASTER_ID, WRITE_SINGLE_COIL_FUNCTIONCODE))
             continue;
-        if(parser.isItException()){
+        if (parser.isItException()) {
             exceptionCode = parser.getExceptionCode();
             return false;
         }
-        if(parser.getAddress()!= address)
+        if (parser.getAddress() != address)
             continue;
-        if(parser.getWriteSingleCoilValue() == COIL_VALUE_ERROR)
+        if (parser.getWriteSingleCoilValue() == COIL_VALUE_ERROR)
             continue;
-        if(value != (parser.getWriteSingleCoilValue() == COIL_VALUE_SET) )
+        if (value != (parser.getWriteSingleCoilValue() == COIL_VALUE_SET))
             continue;
         failed = false;
     }
@@ -59,15 +60,15 @@ boolean master::writeSingleRegister(byte slaveID, word address, word value)
             continue;
         serial.readBytes(message, responseSize);
         parser.setMessage(message);
-        if(messageIsInvalid(parser,MASTER_ID,WRITE_SINGLE_REGISTER_FUNCTIONCODE))
+        if (messageIsInvalid(parser, MASTER_ID, WRITE_SINGLE_REGISTER_FUNCTIONCODE))
             continue;
-        if(parser.isItException()){
+        if (parser.isItException()) {
             exceptionCode = parser.getExceptionCode();
             return false;
         }
-        if(parser.getAddress()!= address)
+        if (parser.getAddress() != address)
             continue;
-        if(value != parser.getWriteSingleRegisterValue())
+        if (value != parser.getWriteSingleRegisterValue())
             continue;
         failed = false;
     }
@@ -93,13 +94,13 @@ boolean master::readInputRegisters(byte slaveID, word startAddress, word quantit
             continue;
         serial.readBytes(message, responseSize);
         parser.setMessage(message);
-        if(messageIsInvalid(parser,MASTER_ID,READ_INPUT_REGISTERS_FUNCTIONCODE))
+        if (messageIsInvalid(parser, MASTER_ID, READ_INPUT_REGISTERS_FUNCTIONCODE))
             continue;
-        if(parser.isItException()){
+        if (parser.isItException()) {
             exceptionCode = parser.getExceptionCode();
             return false;
         }
-        if(parser.getByteCountInReponse() != 2 * quantity)
+        if (parser.getByteCountInReponse() != 2 * quantity)
             continue;
         registersBuffer = parser.getRegisterValuesArray();
         failed = false;
@@ -107,6 +108,104 @@ boolean master::readInputRegisters(byte slaveID, word startAddress, word quantit
     return !failed;
 }
 
+boolean master::readHoldingRegisters(byte slaveID, word startAddress, word quantity)
+{
+    ModbusRequestCreator slave { slaveID };
+    exceptionCode = 0x00;
+    int tries = numberOfTries;
+    int currentTry = 0;
+    boolean failed = true;
+    while (tries > 0 && failed) {
+        currentTry++;
+        tries--;
+        int requestSize = slave.createReadHoldingRegistersRequest(startAddress, quantity);
+        serial.setTimeout(timeout);
+        serial.write(slave.getMessage(), requestSize);
+        delay(delayTime);
+        int responseSize = serial.available();
+        if (responseSize <= 0)
+            continue;
+        serial.readBytes(message, responseSize);
+        parser.setMessage(message);
+        if (messageIsInvalid(parser, MASTER_ID, READ_HOLDING_REGISTERS_FUNCTIONCODE))
+            continue;
+        if (parser.isItException()) {
+            exceptionCode = parser.getExceptionCode();
+            return false;
+        }
+        if (parser.getByteCountInReponse() != 2 * quantity)
+            continue;
+        registersBuffer = parser.getRegisterValuesArray();
+        failed = false;
+    }
+    return !failed;
+}
+
+boolean master::readCoils(byte slaveID, word startAddress, word quantity)
+{
+    ModbusRequestCreator slave { slaveID };
+    exceptionCode = 0x00;
+    int tries = numberOfTries;
+    int currentTry = 0;
+    boolean failed = true;
+    while (tries > 0 && failed) {
+        currentTry++;
+        tries--;
+        int requestSize = slave.createReadCoilsRequest(startAddress, quantity);
+        serial.setTimeout(timeout);
+        serial.write(slave.getMessage(), requestSize);
+        delay(delayTime);
+        int responseSize = serial.available();
+        if (responseSize <= 0)
+            continue;
+        serial.readBytes(message, responseSize);
+        parser.setMessage(message);
+        if (messageIsInvalid(parser, MASTER_ID, READ_COILS_FUNCTIONCODE))
+            continue;
+        if (parser.isItException()) {
+            exceptionCode = parser.getExceptionCode();
+            return false;
+        }
+        if (parser.getByteCountInReponse() != (quantity + 7) / 8)
+            continue;
+        digitalsBuffer = parser.getDigitalValuesArray();
+        failed = false;
+    }
+    return !failed;
+}
+
+boolean master::readDiscreteInputs(byte slaveID, word startAddress, word quantity)
+{
+    ModbusRequestCreator slave { slaveID };
+    exceptionCode = 0x00;
+    int tries = numberOfTries;
+    int currentTry = 0;
+    boolean failed = true;
+    while (tries > 0 && failed) {
+        currentTry++;
+        tries--;
+        int requestSize = slave.createReadDiscreteInputsRequest(startAddress, quantity);
+        serial.setTimeout(timeout);
+        serial.write(slave.getMessage(), requestSize);
+        delay(delayTime);
+        int responseSize = serial.available();
+        if (responseSize <= 0)
+            continue;
+        serial.readBytes(message, responseSize);
+        parser.setMessage(message);
+        if (messageIsInvalid(parser, MASTER_ID, READ_DISCRETE_INPUTS_FUNCTIONCODE))
+            continue;
+        if (parser.isItException()) {
+            exceptionCode = parser.getExceptionCode();
+            return false;
+        }
+        if (parser.getByteCountInReponse() != (quantity + 7) / 8)
+            continue;
+        digitalsBuffer = parser.getDigitalValuesArray();
+        failed = false;
+    }
+    return !failed;
+}
 
 boolean master::messageIsInvalid(ModbusRequestResponseParser parser, byte myID, byte expectedFunctionCode)
 {

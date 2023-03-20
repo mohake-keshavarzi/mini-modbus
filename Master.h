@@ -30,6 +30,10 @@ public:
     boolean writeSingleRegister(byte slaveID,word address,word value);
 
     boolean readInputRegisters(byte slaveID,word startAddress,word quantity);
+    boolean readHoldingRegisters(byte slaveID,word startAddress,word quantity);
+    boolean readCoils(byte slaveID,word startAddress,word quantity);
+    boolean readDiscreteInputs(byte slaveID,word startAddress,word quantity);
+    
 
     byte getExceptionCode(){return exceptionCode;}
     ~master();
