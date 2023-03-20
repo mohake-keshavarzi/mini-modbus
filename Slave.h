@@ -10,6 +10,7 @@ class Slave
 private:
     uint16_t id;
     Stream &serial;
+    unsigned int delayTime{10};
     byte message[256];
 
     ModbusResponseCreator responseCreator{};

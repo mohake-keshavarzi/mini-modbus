@@ -137,7 +137,7 @@ void Slave::execute()
     }
     serial.flush();
     messageSize = 0;
-    delay(10);
+    delay(delayTime);
 }
 
 void Slave::setOnReadRegisterRequestFunction(void (*func)(int type, word startingAddress, int quantity))

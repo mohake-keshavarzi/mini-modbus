@@ -28,5 +28,7 @@
 #define COIL_VALUE_RESET 0x00
 #define COIL_VALUE_ERROR 0x80
 
+#define EXCEPTION_OFFSET 0x80
+
 
 #endif
