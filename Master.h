@@ -29,7 +29,7 @@ public:
     boolean writeSingleCoil(byte slaveID,word address,boolean value); // return false if process wasn't successfull or exception recieved
     boolean writeSingleRegister(byte slaveID,word address,word value);
 
-    int32_t readInputRegisters(byte slaveID,word startAddress,word quantity);
+    boolean readInputRegisters(byte slaveID,word startAddress,word quantity);
 
     byte getExceptionCode(){return exceptionCode;}
     ~master();
