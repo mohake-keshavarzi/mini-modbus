@@ -207,6 +207,74 @@ boolean master::readDiscreteInputs(byte slaveID, word startAddress, word quantit
     return !failed;
 }
 
+boolean master::writeCoils(byte slaveID, word startAddress, boolean* values, word quantity)
+{
+    ModbusRequestCreator slave { slaveID };
+    exceptionCode = 0x00;
+    int tries = numberOfTries;
+    int currentTry = 0;
+    boolean failed = true;
+    while (tries > 0 && failed) {
+        currentTry++;
+        tries--;
+        int requestSize = slave.createWriteCoilsRequest(startAddress, values, quantity);
+        serial.setTimeout(timeout);
+        serial.write(slave.getMessage(), requestSize);
+        delay(delayTime);
+        int responseSize = serial.available();
+        if (responseSize <= 0)
+            continue;
+        serial.readBytes(message, responseSize);
+        parser.setMessage(message);
+        if(messageIsInvalid(parser,MASTER_ID,WRITE_MULTIPLE_COILS_FUNCTIONCODE))
+            continue;
+        if(parser.isItException()){
+            exceptionCode = parser.getExceptionCode();
+            return false;
+        }
+        if(parser.getAddress() != startAddress)
+            continue;
+        if(parser.getNumberOfRegsOrDigitals() != quantity)
+            continue;
+        failed = false;
+    }
+    return !failed;
+}
+
+boolean master::writeHoldingRegisters(byte slaveID, word startAddress, word* values, word quantity)
+{
+    ModbusRequestCreator slave { slaveID };
+    exceptionCode = 0x00;
+    int tries = numberOfTries;
+    int currentTry = 0;
+    boolean failed = true;
+    while (tries > 0 && failed) {
+        currentTry++;
+        tries--;
+        int requestSize = slave.createWriteRegistersRequest(startAddress, values, quantity);
+        serial.setTimeout(timeout);
+        serial.write(slave.getMessage(), requestSize);
+        delay(delayTime);
+        int responseSize = serial.available();
+        if (responseSize <= 0)
+            continue;
+        serial.readBytes(message, responseSize);
+        parser.setMessage(message);
+        if(messageIsInvalid(parser,MASTER_ID,WRITE_MULTIPLE_REGISTERS_FUNCTIONCODE))
+            continue;
+        if(parser.isItException()){
+            exceptionCode = parser.getExceptionCode();
+            return false;
+        }
+        if(parser.getAddress() != startAddress)
+            continue;
+        if(parser.getNumberOfRegsOrDigitals() != quantity)
+            continue;
+        failed = false;
+    }
+    return !failed;
+}
+
 boolean master::messageIsInvalid(ModbusRequestResponseParser parser, byte myID, byte expectedFunctionCode)
 {
     if (myID != parser.getSlaveID())

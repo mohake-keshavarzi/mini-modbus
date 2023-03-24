@@ -33,6 +33,9 @@ public:
     boolean readHoldingRegisters(byte slaveID,word startAddress,word quantity);
     boolean readCoils(byte slaveID,word startAddress,word quantity);
     boolean readDiscreteInputs(byte slaveID,word startAddress,word quantity);
+
+    boolean writeCoils(byte slaveID,word startAddress,boolean* values, word quantity);
+    boolean writeHoldingRegisters(byte slaveID,word startAddress,word* values, word quantity);
     
 
     byte getExceptionCode(){return exceptionCode;}
