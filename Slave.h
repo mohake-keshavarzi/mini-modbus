@@ -39,6 +39,7 @@ public:
 
 
     byte* getMessage(){return message;}
+    void setDelayTime(unsigned int t){this->delayTime=t;}
 
     ~Slave();
 };
