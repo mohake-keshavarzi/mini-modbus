@@ -1,11 +1,11 @@
 #include "Master.h"
 
-master::master(Stream& s)
+Master::Master(Stream& s)
     : serial(s)
 {
 }
 
-boolean master::writeSingleCoil(byte slaveID, word address, boolean value)
+boolean Master::writeSingleCoil(byte slaveID, word address, boolean value)
 {
     ModbusRequestCreator slave { slaveID };
     exceptionCode = 0x00;
@@ -41,7 +41,7 @@ boolean master::writeSingleCoil(byte slaveID, word address, boolean value)
     return !failed;
 }
 
-boolean master::writeSingleRegister(byte slaveID, word address, word value)
+boolean Master::writeSingleRegister(byte slaveID, word address, word value)
 {
     ModbusRequestCreator slave { slaveID };
     exceptionCode = 0x00;
@@ -75,7 +75,7 @@ boolean master::writeSingleRegister(byte slaveID, word address, word value)
     return !failed;
 }
 
-boolean master::readInputRegisters(byte slaveID, word startAddress, word quantity)
+boolean Master::readInputRegisters(byte slaveID, word startAddress, word quantity)
 {
     ModbusRequestCreator slave { slaveID };
     exceptionCode = 0x00;
@@ -108,7 +108,7 @@ boolean master::readInputRegisters(byte slaveID, word startAddress, word quantit
     return !failed;
 }
 
-boolean master::readHoldingRegisters(byte slaveID, word startAddress, word quantity)
+boolean Master::readHoldingRegisters(byte slaveID, word startAddress, word quantity)
 {
     ModbusRequestCreator slave { slaveID };
     exceptionCode = 0x00;
@@ -141,7 +141,7 @@ boolean master::readHoldingRegisters(byte slaveID, word startAddress, word quant
     return !failed;
 }
 
-boolean master::readCoils(byte slaveID, word startAddress, word quantity)
+boolean Master::readCoils(byte slaveID, word startAddress, word quantity)
 {
     ModbusRequestCreator slave { slaveID };
     exceptionCode = 0x00;
@@ -174,7 +174,7 @@ boolean master::readCoils(byte slaveID, word startAddress, word quantity)
     return !failed;
 }
 
-boolean master::readDiscreteInputs(byte slaveID, word startAddress, word quantity)
+boolean Master::readDiscreteInputs(byte slaveID, word startAddress, word quantity)
 {
     ModbusRequestCreator slave { slaveID };
     exceptionCode = 0x00;
@@ -207,7 +207,7 @@ boolean master::readDiscreteInputs(byte slaveID, word startAddress, word quantit
     return !failed;
 }
 
-boolean master::writeCoils(byte slaveID, word startAddress, boolean* values, word quantity)
+boolean Master::writeCoils(byte slaveID, word startAddress, boolean* values, word quantity)
 {
     ModbusRequestCreator slave { slaveID };
     exceptionCode = 0x00;
@@ -241,7 +241,7 @@ boolean master::writeCoils(byte slaveID, word startAddress, boolean* values, wor
     return !failed;
 }
 
-boolean master::writeHoldingRegisters(byte slaveID, word startAddress, word* values, word quantity)
+boolean Master::writeHoldingRegisters(byte slaveID, word startAddress, word* values, word quantity)
 {
     ModbusRequestCreator slave { slaveID };
     exceptionCode = 0x00;
@@ -275,7 +275,7 @@ boolean master::writeHoldingRegisters(byte slaveID, word startAddress, word* val
     return !failed;
 }
 
-boolean master::messageIsInvalid(ModbusRequestResponseParser parser, byte myID, byte expectedFunctionCode)
+boolean Master::messageIsInvalid(ModbusRequestResponseParser parser, byte myID, byte expectedFunctionCode)
 {
     if (myID != parser.getSlaveID())
         return true;
@@ -285,6 +285,6 @@ boolean master::messageIsInvalid(ModbusRequestResponseParser parser, byte myID, 
     return parser.getFunctionCode() != expectedFunctionCode;
 }
 
-master::~master()
+Master::~Master()
 {
 }

@@ -23,7 +23,7 @@ private:
     boolean  messageIsInvalid(ModbusRequestResponseParser parser, byte myID, byte expectedFunctionCode);
 
 public:
-    master(Stream& s);
+    Master(Stream& s);
 
 
     boolean writeSingleCoil(byte slaveID,word address,boolean value); // return false if process wasn't successfull or exception recieved
@@ -39,7 +39,7 @@ public:
     
 
     byte getExceptionCode(){return exceptionCode;}
-    ~master();
+    ~Master();
 };
 
 
