@@ -1,5 +1,5 @@
-#ifndef SLAVE_H
-#define SLAVE_H
+#ifndef MASTER_H
+#define MASTER_H
 
 #include "FunctionCodes.h"
 #include "ModbusRequestCreator.h"
