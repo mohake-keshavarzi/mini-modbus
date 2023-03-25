@@ -5,7 +5,7 @@
 #include "ModbusRequestCreator.h"
 #include "ModbusRequestResponseParser.h"
 
-class master {
+class Master {
 private:
     Stream& serial;
     byte message[256];
