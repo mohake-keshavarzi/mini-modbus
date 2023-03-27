@@ -24,6 +24,7 @@ boolean Master::writeSingleCoil(byte slaveID, word address, boolean value)
             continue;
         serial.readBytes(message, responseSize);
         parser.setMessage(message);
+        
         if (messageIsInvalid(parser, MASTER_ID, WRITE_SINGLE_COIL_FUNCTIONCODE))
             continue;
         if (parser.isItException()) {
@@ -276,12 +277,11 @@ boolean Master::writeHoldingRegisters(byte slaveID, word startAddress, word* val
 }
 
 boolean Master::messageIsInvalid(ModbusRequestResponseParser parser, byte myID, byte expectedFunctionCode)
-{
+{   
     if (myID != parser.getSlaveID())
         return true;
     if (parser.isItException())
-        if (parser.getFunctionCode() != expectedFunctionCode + EXCEPTION_OFFSET)
-            return true;
+        return ((byte) parser.getFunctionCode() != (byte) (expectedFunctionCode + EXCEPTION_OFFSET));
     return parser.getFunctionCode() != expectedFunctionCode;
 }
 

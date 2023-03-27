@@ -39,6 +39,7 @@ public:
     
 
     byte getExceptionCode(){return exceptionCode;}
+    byte* getResponseMessage(){return message;}
     ~Master();
 };
 
