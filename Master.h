@@ -18,12 +18,12 @@ private:
     word* registersBuffer;
     boolean* digitalsBuffer;
     
-    ModbusRequestResponseParser parser { nullptr };
+    ModbusRequestResponseParser parser;
 
     boolean  messageIsInvalid(ModbusRequestResponseParser &parser, byte myID, byte expectedFunctionCode);
-    boolean isQuantityInRange(int quantity, int memoryType);
+    
 public:
-    Master(Stream& s);
+    Master(Stream& s,uint16_t digitalValuesBufferSize,uint16_t registerValuesBufferSize);
 
 
     boolean writeSingleCoil(byte slaveID,word address,boolean value); // return false if process wasn't successfull or exception recieved 

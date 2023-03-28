@@ -1,8 +1,9 @@
 #include "Master.h"
 
-Master::Master(Stream& s)
-    : serial(s)
+Master::Master(Stream& s,uint16_t digitalValuesBufferSize,uint16_t registerValuesBufferSize)
+    : serial(s),parser(nullptr,digitalValuesBufferSize,registerValuesBufferSize)
 {
+
 }
 
 boolean Master::writeSingleCoil(byte slaveID, word address, boolean value)
@@ -78,7 +79,6 @@ boolean Master::writeSingleRegister(byte slaveID, word address, word value)
 
 boolean Master::readInputRegisters(byte slaveID, word startAddress, word quantity)
 {
-    if(!isQuantityInRange(quantity,INPUT_REGISTERS)) return false;
     ModbusRequestCreator slave { slaveID };
     exceptionCode = 0x00;
     int tries = numberOfTries;
@@ -112,7 +112,6 @@ boolean Master::readInputRegisters(byte slaveID, word startAddress, word quantit
 
 boolean Master::readHoldingRegisters(byte slaveID, word startAddress, word quantity)
 {
-    if(!isQuantityInRange(quantity,HOLDING_REGISTERS)) return false;
     ModbusRequestCreator slave { slaveID };
     exceptionCode = 0x00;
     int tries = numberOfTries;
@@ -146,7 +145,6 @@ boolean Master::readHoldingRegisters(byte slaveID, word startAddress, word quant
 
 boolean Master::readCoils(byte slaveID, word startAddress, word quantity)
 {
-    if(!isQuantityInRange(quantity,COILS)) return false;
     ModbusRequestCreator slave { slaveID };
     exceptionCode = 0x00;
     int tries = numberOfTries;
@@ -180,7 +178,6 @@ boolean Master::readCoils(byte slaveID, word startAddress, word quantity)
 
 boolean Master::readDiscreteInputs(byte slaveID, word startAddress, word quantity)
 {
-    if(!isQuantityInRange(quantity,DISCRETE_INPUTS)) return false;
     ModbusRequestCreator slave { slaveID };
     exceptionCode = 0x00;
     int tries = numberOfTries;
@@ -214,7 +211,6 @@ boolean Master::readDiscreteInputs(byte slaveID, word startAddress, word quantit
 
 boolean Master::writeCoils(byte slaveID, word startAddress, boolean* values, word quantity)
 {
-    if(!isQuantityInRange(quantity,COILS)) return false;
     ModbusRequestCreator slave { slaveID };
     exceptionCode = 0x00;
     int tries = numberOfTries;
@@ -249,7 +245,6 @@ boolean Master::writeCoils(byte slaveID, word startAddress, boolean* values, wor
 
 boolean Master::writeHoldingRegisters(byte slaveID, word startAddress, word* values, word quantity)
 {
-    if(!isQuantityInRange(quantity,HOLDING_REGISTERS)) return false;
     ModbusRequestCreator slave { slaveID };
     exceptionCode = 0x00;
     int tries = numberOfTries;
@@ -289,25 +284,6 @@ boolean Master::messageIsInvalid(ModbusRequestResponseParser &parser, byte myID,
     if (parser.isItException())
         return ((byte) parser.getFunctionCode() != (byte) (expectedFunctionCode + EXCEPTION_OFFSET));
     return parser.getFunctionCode() != expectedFunctionCode;
-}
-
-boolean Master::isQuantityInRange(int quantity, int memoryType){
-    switch (memoryType)
-    {
-    case COILS:
-    case DISCRETE_INPUTS:
-        return (quantity>0) && (quantity<PARSER_DIGITALS_BUFFER_SIZE) ;
-        break;
-    
-    case INPUT_REGISTERS:
-    case HOLDING_REGISTERS:
-        return (quantity>0) && (quantity<PARSER_REGISTERS_BUFFER_SIZE) ;
-        break;
-    
-    default:
-        return false;
-        break;
-    }
 }
 
 

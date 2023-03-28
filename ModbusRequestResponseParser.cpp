@@ -4,9 +4,11 @@
 
 //**************TODO: add data exists checking***********************//
 
-ModbusRequestResponseParser::ModbusRequestResponseParser(byte* message)
+ModbusRequestResponseParser::ModbusRequestResponseParser(byte* message,uint16_t digitalValuesBufferSize,uint16_t registerValuesBufferSize)
     : message { message }
 {
+    digitalValues= new boolean[digitalValuesBufferSize];
+    registerValues = new word[registerValuesBufferSize];
 }
 
 uint8_t ModbusRequestResponseParser::getFunctionCode()
@@ -150,6 +152,6 @@ word* ModbusRequestResponseParser::getRegisterValuesArray()
 
 ModbusRequestResponseParser::~ModbusRequestResponseParser()
 {
-    // delete[] digitalValues;
-    // delete[] registerValues;
+    delete[] digitalValues;
+    delete[] registerValues;
 }

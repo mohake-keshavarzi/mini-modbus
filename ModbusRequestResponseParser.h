@@ -4,24 +4,24 @@
 #ifndef MODBUS_REQUEST_RESPONSE_PARSER_H
 #define MODBUS_REQUEST_RESPONSE_PARSER_H
 
+#include "FunctionCodes.h"
 #include "Arduino.h"
 #include "WordFunctions.h"
-#include "FunctionCodes.h"
 
 
 /// @brief It gets a message and extracts datas and features needed from it.
-class ModbusRequestResponseParser {
+class ModbusRequestResponseParser {    
 private:
     byte* message;
     WordFunctions funcs {};
-
-    boolean digitalValues[PARSER_DIGITALS_BUFFER_SIZE]{}; // Digital value refers to both coil and Discrete input values
-    word registerValues[PARSER_REGISTERS_BUFFER_SIZE]{};
+    
+    boolean* digitalValues{}; // Digital value refers to both coil and Discrete input values
+    word* registerValues{};
 
 public:
     /// @brief Creates an instance of the class and gets a pointer to the message.
     /// @param message  Pointer to an aray of bytes containing the message.
-    ModbusRequestResponseParser(byte* message);
+    ModbusRequestResponseParser(byte* message,uint16_t digitalValuesBufferSize,uint16_t registerValuesBufferSize);
 
     /// @brief Sets the the message.
     /// @param message pointer to array of bytes containing the message.

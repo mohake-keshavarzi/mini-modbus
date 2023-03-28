@@ -14,7 +14,7 @@ private:
     byte message[256];
 
     ModbusResponseCreator responseCreator{};
-    ModbusRequestResponseParser parser{nullptr};
+    ModbusRequestResponseParser parser;
 
     void (*onReadRegisterfunc)(int type,word startingAddress, int quantity) {nullptr};
     void (*onWriteRegisterfunc)(int type,word startingAddress ,word* values, int quantity) {nullptr};
@@ -23,7 +23,7 @@ private:
     void (*onWriteDigitalfunc)(int type,word startingAddress ,boolean* values, int quantity) {nullptr};
 
 public:
-    Slave(uint16_t id,Stream &s);
+    Slave(uint16_t id,Stream &s,uint16_t digitalValuesBufferSize,uint16_t registerValuesBufferSize);
 
     void setCoilsRefrence(boolean* coilsArray,uint16_t size);
     void setDiscreteInputsRefrence(boolean* inputDiscretesArray,uint16_t size);

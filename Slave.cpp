@@ -1,8 +1,9 @@
 #include "Slave.h"
 
-Slave::Slave(uint16_t id, Stream& s)
+Slave::Slave(uint16_t id, Stream& s,uint16_t digitalValuesBufferSize,uint16_t registerValuesBufferSize)
     : id(id)
     , serial(s)
+    , parser(nullptr ,digitalValuesBufferSize, registerValuesBufferSize)
 {
 }
 
