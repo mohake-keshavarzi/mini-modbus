@@ -45,7 +45,8 @@ void setup() {
 }
 void loop() {
     int quantity=3;
-    if(miniModbusMaster.readInputRegisters(ACTUATOR_ID,0x0002,quantity)){
+  
+    if(miniModbusMaster.readHoldingRegisters(ACTUATOR_ID,0x0002,quantity)){
         // digitalWrite(13,true);
         Serial.println("Seccessful");
         Serial.print("DATA:");

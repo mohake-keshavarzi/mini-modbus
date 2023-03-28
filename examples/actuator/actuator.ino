@@ -1,7 +1,7 @@
 #include "MiniModbus.h"
 
 #define MY_ID 0x02
-#define NUM_OF_HOLDING_REGS 2
+#define NUM_OF_HOLDING_REGS 5
 #define NUM_OF_INPUT_REGS 10
 
 
@@ -36,7 +36,7 @@ void setupTimer1Interrupt(unsigned long delayTime) {
 // Timer1 interrupt service routine (ISR)
 ISR(TIMER1_COMPA_vect) {
   digitalWrite(13,!digitalRead(13));
-  for(int i{0};i<NUM_OF_INPUT_REGS;i++) inputRegisters[i]=random(10,90);
+  for(int i{0};i<NUM_OF_INPUT_REGS;i++) holdingRegisters[i]=random(90,500);
 
 }
 // Based on Uno
@@ -47,7 +47,7 @@ void setup()
     pinMode(13, OUTPUT);
     miniModbusSlave.setHoldingRegistersRefrence(holdingRegisters,NUM_OF_HOLDING_REGS);
     miniModbusSlave.setInputRegistersRefrence(inputRegisters, NUM_OF_INPUT_REGS);
-    setupTimer1Interrupt(2000);
+    setupTimer1Interrupt(1000);
 }
 
 void loop()

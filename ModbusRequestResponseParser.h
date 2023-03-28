@@ -6,6 +6,7 @@
 
 #include "Arduino.h"
 #include "WordFunctions.h"
+#include "FunctionCodes.h"
 
 /// @brief It gets a message and extracts datas and features needed from it.
 class ModbusRequestResponseParser {
@@ -13,8 +14,8 @@ private:
     byte* message;
     WordFunctions funcs {};
 
-    boolean digitalValues[2000]{}; // Digital value refers to both coil and Discrete input values
-    word registerValues[125]{};
+    boolean digitalValues[PARSER_DIGITALS_BUFFER_SIZE]{}; // Digital value refers to both coil and Discrete input values
+    word registerValues[PARSER_REGISTERS_BUFFER_SIZE]{};
 
 public:
     /// @brief Creates an instance of the class and gets a pointer to the message.
