@@ -1,5 +1,6 @@
 #include "MiniModbus.h"
 #define CONTROLLER_ID 0x01
+#define ACTUATOR_ID 0x02
 
 Master miniModbusMaster{Serial2};
 boolean taskIsDone{false};
@@ -13,15 +14,17 @@ void setup() {
     
 }
 void loop() {
-    boolean values[2]={false,true};
-//    digitalWrite(13,values[1]);
-    if(miniModbusMaster.writeSingleCoil(CONTROLLER_ID,0x0004,true)){
-        digitalWrite(13,true);
+    int value = analogRead(A0);
+    Serial.print("A0:");
+    Serial.println(value);
+
+    if(miniModbusMaster.writeSingleRegister(ACTUATOR_ID,0x0001,value)){
+        analogWrite(13,value);
         Serial.println("Seccessful");
 
     }
     else{
-        digitalWrite(13,false);
+        analogWrite(13,0);
         Serial.print("Not seccessful: ");
         Serial.println(miniModbusMaster.getExceptionCode());
     }
