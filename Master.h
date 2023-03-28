@@ -15,8 +15,8 @@ private:
     unsigned int delayTime{100};
     byte exceptionCode{};
 
-    word* registersBuffer{nullptr};
-    boolean digitalsBuffer{nullptr};
+    word* registersBuffer;
+    boolean* digitalsBuffer;
     
     ModbusRequestResponseParser parser { nullptr };
 
@@ -40,6 +40,9 @@ public:
 
     byte getExceptionCode(){return exceptionCode;}
     byte* getResponseMessage(){return message;}
+
+    boolean* getDigitalsBuffer(){return digitalsBuffer;}
+    word* getRegistersBuffer(){return registersBuffer;}
     ~Master();
 };
 

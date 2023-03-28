@@ -2,9 +2,11 @@
 
 #define MY_ID 0x02
 #define NUM_OF_HOLDING_REGS 2
+#define NUM_OF_INPUT_REGS 10
 
 
 word holdingRegisters[NUM_OF_HOLDING_REGS] {};
+word inputRegisters[NUM_OF_INPUT_REGS] {};
 
 
 Slave miniModbusSlave{MY_ID,Serial};
@@ -34,6 +36,8 @@ void setupTimer1Interrupt(unsigned long delayTime) {
 // Timer1 interrupt service routine (ISR)
 ISR(TIMER1_COMPA_vect) {
   digitalWrite(13,!digitalRead(13));
+  for(int i{0};i<NUM_OF_INPUT_REGS;i++) inputRegisters[i]=random(10,90);
+
 }
 // Based on Uno
 void setup()
@@ -42,7 +46,7 @@ void setup()
     // Serial2.begin(19200);
     pinMode(13, OUTPUT);
     miniModbusSlave.setHoldingRegistersRefrence(holdingRegisters,NUM_OF_HOLDING_REGS);
-    
+    miniModbusSlave.setInputRegistersRefrence(inputRegisters, NUM_OF_INPUT_REGS);
     setupTimer1Interrupt(2000);
 }
 
@@ -54,7 +58,6 @@ void loop()
     // Serial.print("Coil1:");
     // Serial.println(coils[1]);
     
-    setupTimer1Interrupt(holdingRegisters[1]);
     
    
 }

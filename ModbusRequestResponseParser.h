@@ -13,8 +13,8 @@ private:
     byte* message;
     WordFunctions funcs {};
 
-    boolean* digitalValues; // Digital value refers to both coil and Discrete input values
-    word* registerValues;
+    boolean digitalValues[2000]{}; // Digital value refers to both coil and Discrete input values
+    word registerValues[125]{};
 
 public:
     /// @brief Creates an instance of the class and gets a pointer to the message.

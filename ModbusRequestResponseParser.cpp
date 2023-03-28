@@ -98,25 +98,25 @@ boolean ModbusRequestResponseParser::getDigitalValueByIndexInRequest(uint32_t in
 
 boolean* ModbusRequestResponseParser::getDigitalValuesArray()
 {
-    delete[] digitalValues;
+    // delete[] digitalValues;
     int count = 0;
     switch (getFunctionCode()) {
     case READ_COILS_FUNCTIONCODE:
     case READ_DISCRETE_INPUTS_FUNCTIONCODE:
         count = getByteCountInReponse() * 8;
-        digitalValues = new boolean[count];
+        // digitalValues = new boolean[count];
         for (int i { 0 }; i < count; i++)
             digitalValues[i] = getDigitalValueByIndexInResponse(i);
         break;
     case WRITE_MULTIPLE_COILS_FUNCTIONCODE:
         count = getByteCountInRequest() * 8;
-        digitalValues = new boolean[count];
+        // digitalValues = new boolean[count];
         for (int i { 0 }; i < count; i++)
             digitalValues[i] = getDigitalValueByIndexInRequest(i);
         break;
 
     default:
-        digitalValues = nullptr;
+        return nullptr;
         break;
     }
     return digitalValues;
@@ -124,25 +124,25 @@ boolean* ModbusRequestResponseParser::getDigitalValuesArray()
 
 word* ModbusRequestResponseParser::getRegisterValuesArray()
 {
-    delete[] registerValues;
+    // delete[] registerValues;
     int count = 0;
     switch (getFunctionCode()) {
     case READ_HOLDING_REGISTERS_FUNCTIONCODE:
     case READ_INPUT_REGISTERS_FUNCTIONCODE:
         count = getByteCountInReponse() / 2;
-        registerValues = new word[count];
+        // registerValues = new word[count];
         for (int i { 0 }; i < count; i++)
             registerValues[i] = getRegisterValueByIndexInResponse(i);
         break;
     case WRITE_MULTIPLE_REGISTERS_FUNCTIONCODE:
         count = getByteCountInRequest() / 2;
-        registerValues = new word[count];
+        // registerValues = new word[count];
         for (int i { 0 }; i < count; i++)
             registerValues[i] = getRegisterValueByIndexInRequest(i);
         break;
 
     default:
-        registerValues = nullptr;
+        return nullptr;
         break;
     }
     return registerValues;
@@ -150,6 +150,6 @@ word* ModbusRequestResponseParser::getRegisterValuesArray()
 
 ModbusRequestResponseParser::~ModbusRequestResponseParser()
 {
-    delete[] digitalValues;
-    delete[] registerValues;
+    // delete[] digitalValues;
+    // delete[] registerValues;
 }
