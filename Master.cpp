@@ -291,7 +291,7 @@ boolean Master::messageIsInvalid(ModbusRequestResponseParser &parser, byte myID,
     return parser.getFunctionCode() != expectedFunctionCode;
 }
 
-boolean isQuantityInRange(int quantity, int memoryType){
+boolean Master::isQuantityInRange(int quantity, int memoryType){
     switch (memoryType)
     {
     case COILS:

@@ -4,8 +4,8 @@
 // #include "ModbusRequestCreator.h"
 // #include "ModbusRequestResponseParser.h"
 // #include "ModbusResponseCreator.h"
+#include "FunctionCodes.h"
 #include "Slave.h"
 #include "Master.h"
-#include "FunctionCodes.h"
 
 #endif

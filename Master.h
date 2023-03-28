@@ -21,7 +21,7 @@ private:
     ModbusRequestResponseParser parser { nullptr };
 
     boolean  messageIsInvalid(ModbusRequestResponseParser &parser, byte myID, byte expectedFunctionCode);
-
+    boolean isQuantityInRange(int quantity, int memoryType);
 public:
     Master(Stream& s);
 

@@ -150,6 +150,6 @@ word* ModbusRequestResponseParser::getRegisterValuesArray()
 
 ModbusRequestResponseParser::~ModbusRequestResponseParser()
 {
-    delete[] digitalValues;
-    delete[] registerValues;
+    // delete[] digitalValues;
+    // delete[] registerValues;
 }

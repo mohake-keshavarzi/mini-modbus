@@ -1,12 +1,13 @@
 /// @file ModbusRequestResponseParser.h
 /// @brief This header files contains necessary tools to extract features from Request and Response messages.
-
+#pragma once
 #ifndef MODBUS_REQUEST_RESPONSE_PARSER_H
 #define MODBUS_REQUEST_RESPONSE_PARSER_H
 
 #include "Arduino.h"
 #include "WordFunctions.h"
 #include "FunctionCodes.h"
+
 
 /// @brief It gets a message and extracts datas and features needed from it.
 class ModbusRequestResponseParser {
