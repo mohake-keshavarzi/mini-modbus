@@ -1,3 +1,4 @@
+#include "C:\Users\AEA\AppData\Local\Arduino15\libraries\MiniModbus\examples\Configs.h"
 #include "MiniModbus.h"
 
 #define MY_ID 0x02
@@ -9,7 +10,7 @@ word holdingRegisters[NUM_OF_HOLDING_REGS] {};
 word inputRegisters[NUM_OF_INPUT_REGS] {};
 
 
-Slave miniModbusSlave{MY_ID,Serial};
+Slave miniModbusSlave{MY_ID,Serial,PARSER_DIGITALS_BUFFER_SIZE,PARSER_REGISTERS_BUFFER_SIZE};
 
 void setupTimer1Interrupt(unsigned long delayTime) {
   cli(); // Disable global interrupts
@@ -36,7 +37,7 @@ void setupTimer1Interrupt(unsigned long delayTime) {
 // Timer1 interrupt service routine (ISR)
 ISR(TIMER1_COMPA_vect) {
   digitalWrite(13,!digitalRead(13));
-  for(int i{0};i<NUM_OF_INPUT_REGS;i++) holdingRegisters[i]=random(90,500);
+  for(int i{0};i<NUM_OF_HOLDING_REGS;i++) holdingRegisters[i]=i;
 
 }
 // Based on Uno

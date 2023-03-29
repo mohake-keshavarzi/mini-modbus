@@ -1,8 +1,9 @@
+#include "C:\Users\AEA\AppData\Local\Arduino15\libraries\MiniModbus\examples\Configs.h"
 #include "MiniModbus.h"
 #define CONTROLLER_ID 0x01
 #define ACTUATOR_ID 0x02
 
-Master miniModbusMaster{Serial2};
+Master miniModbusMaster{Serial2,PARSER_DIGITALS_BUFFER_SIZE,PARSER_REGISTERS_BUFFER_SIZE};
 boolean taskIsDone{false};
 
 void setupTimer1Interrupt(unsigned long delayTime) {
@@ -44,9 +45,9 @@ void setup() {
     
 }
 void loop() {
-    int quantity=3;
+    int quantity=6;
   
-    if(miniModbusMaster.readHoldingRegisters(ACTUATOR_ID,0x0002,quantity)){
+    if(miniModbusMaster.readHoldingRegisters(ACTUATOR_ID,0x0000,quantity)){
         // digitalWrite(13,true);
         Serial.println("Seccessful");
         Serial.print("DATA:");
