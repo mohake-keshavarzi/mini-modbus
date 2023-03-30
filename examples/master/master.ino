@@ -45,9 +45,12 @@ void setup() {
     
 }
 void loop() {
-    int quantity=9;
-  
-    if(miniModbusMaster.readDiscreteInputs(CONTROLLER_ID,0x0005,quantity)){
+    int quantity=5;
+    boolean values[10]={true,false,true,true,false,false,true,false,false,true};
+    if(miniModbusMaster.writeCoils(CONTROLLER_ID, 0x0004, values, quantity))
+        Serial.println("Wrote Coils Successfully");
+    if(miniModbusMaster.readCoils(CONTROLLER_ID, 0x0003, quantity)){
+    
         // digitalWrite(13,true);
         Serial.println("Seccessful");
         Serial.print("DATA:");

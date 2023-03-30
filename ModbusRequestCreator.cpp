@@ -136,26 +136,23 @@ uint16_t ModbusRequestCreator::createWriteCoilsRequest(uint16_t startAddress, bo
     message[5] = funcs.getLSByte(quantity);
     message[6] = byteCount;
     int currentPlaceInMessage = 7;
-    byte myByte = 0x00;
-    int i = startAddress;
-    int j = 0;
-    while (i < quantity + startAddress || j % 8 != 7) {
-        myByte >> 1;
-        if (i < quantity + startAddress) {
-
-            if (values[i]) {
-                myByte | 0x80;
-            } else {
-                myByte & 0x7F;
-            }
+    byte myBytes[byteCount]{};
+    for (uint16_t i = 0; i < quantity; i++)
+    {
+        // Calculate the index of the coil status byte that contains the current coil
+        uint16_t byteIndex = (i) / 8;
+    
+        // Calculate the bit position of the current coil within the current coil status byte
+        uint8_t bitPosition = (i) % 8;
+    
+        // Set the bit in the coil status byte if the current coil is true
+        if (values[i])
+        {
+            myBytes[byteIndex] |= (1 << bitPosition);
         }
-        if (j % 8 == 7) {
-            message[currentPlaceInMessage] = myByte;
-            currentPlaceInMessage++;
-            myByte = 0x00;
-        }
-        i++;
-        j++;
+    }
+    for(int j{};j<byteCount;j++){
+        message[currentPlaceInMessage+j]=myBytes[j];
     }
     return message_size;
 }

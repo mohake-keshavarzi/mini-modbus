@@ -205,7 +205,7 @@ uint16_t ModbusResponseCreator::createWriteCoilsResponse(uint16_t startAddress, 
     message[5] = funcs.getLSByte(quantity);
 
     for(int i{0};i<quantity;i++){
-        coils[i]=values[i];
+        coils[startAddress + i]=values[i];
     }
 
     return message_size;
