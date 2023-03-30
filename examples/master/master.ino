@@ -45,15 +45,15 @@ void setup() {
     
 }
 void loop() {
-    int quantity=6;
+    int quantity=9;
   
-    if(miniModbusMaster.readHoldingRegisters(ACTUATOR_ID,0x0000,quantity)){
+    if(miniModbusMaster.readDiscreteInputs(CONTROLLER_ID,0x0005,quantity)){
         // digitalWrite(13,true);
         Serial.println("Seccessful");
         Serial.print("DATA:");
         for(int i{0};i<quantity;i++){
           Serial.print("  ");
-          Serial.print(miniModbusMaster.getRegistersBuffer()[i]);    
+          Serial.print(miniModbusMaster.getDigitalsBuffer()[i]);    
         }
         Serial.println();
     }
