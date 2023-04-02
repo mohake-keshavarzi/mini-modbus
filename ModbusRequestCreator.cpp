@@ -174,7 +174,7 @@ uint16_t ModbusRequestCreator::createWriteRegistersRequest(uint16_t startAddress
     message[6] = byteCount;
 
     int currentPlaceInMessage = 7;
-    for (int i { startAddress }; i < quantity + startAddress; i++) {
+    for (int i { 0 }; i < quantity ; i++) {
         message[currentPlaceInMessage] = funcs.getMSByte(values[i]);
         currentPlaceInMessage++;
         message[currentPlaceInMessage] = funcs.getLSByte(values[i]);

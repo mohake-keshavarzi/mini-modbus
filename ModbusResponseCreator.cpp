@@ -230,7 +230,7 @@ uint16_t ModbusResponseCreator::createWriteRegistersResponse(uint16_t startAddre
     message[5] = funcs.getLSByte(quantity);
 
     for(int i{0};i<quantity;i++){
-        holdingRegisters[i]=values[i];
+        holdingRegisters[startAddress + i]=values[i];
     }
 
     return message_size;

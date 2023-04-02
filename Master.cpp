@@ -256,6 +256,14 @@ boolean Master::writeHoldingRegisters(byte slaveID, word startAddress, word* val
         int requestSize = slave.createWriteRegistersRequest(startAddress, values, quantity);
         serial.setTimeout(timeout);
         serial.write(slave.getMessage(), requestSize);
+        /////////////////////// to be deleted
+        // Serial.println("REQUEST MESSAGE:");
+        // for (int i = 0; i < requestSize; i++) {
+        //     Serial.print(slave.getMessage()[i], HEX);
+        //     Serial.print(" ");
+        // }
+        // Serial.println();
+    /////////////////////////////////
         delay(delayTime);
         int responseSize = serial.available();
         if (responseSize <= 0)
