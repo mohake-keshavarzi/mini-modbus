@@ -6,6 +6,11 @@ Master::Master(Stream& s,uint16_t digitalValuesBufferSize,uint16_t registerValue
 
 }
 
+void Master::setup(int baudRate)
+{
+    this->baudRate=baudRate;
+    interCharDelay= 1000000 / baudRate / 10; // 10 bits per character
+}
 
 boolean Master::writeSingleCoil(byte slaveID, word address, boolean value)
 {
@@ -330,7 +335,8 @@ unsigned short Master::readSerial(byte* buffer)
             buffer[position] = serial.read();
             position++;
         }
-        // delay(READING_SERIAL_BYTE_INTERVAL_DELAY);
+        if(interCharDelay>0)
+            delay(interCharDelay);
     }
     
     return position;

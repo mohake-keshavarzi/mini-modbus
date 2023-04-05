@@ -37,8 +37,9 @@ ISR(TIMER1_COMPA_vect) {
 
 // int working{0};
 void setup() {
-    Serial2.begin(115200);
+    Serial2.begin(19200);
     Serial.begin(19200);
+    miniModbusMaster.setup(19200);
     pinMode(13, OUTPUT);
     digitalWrite(13,false);
 //    pinMode(20, INPUT_PULLUP);

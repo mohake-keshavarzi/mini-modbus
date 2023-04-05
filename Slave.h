@@ -9,7 +9,9 @@ class Slave
 {
 private:
 
-    word temperory;
+    unsigned long baudRate{};
+    unsigned long interCharDelay{}; 
+
     uint16_t id;
     Stream &serial;
     unsigned int delayTime{10};
@@ -29,7 +31,9 @@ private:
 
 public:
     Slave(uint16_t id,Stream &s,uint16_t digitalValuesBufferSize,uint16_t registerValuesBufferSize);
-     
+    
+    void setup(int baudRate);
+
     void setCoilsRefrence(boolean* coilsArray,uint16_t size);
     void setDiscreteInputsRefrence(boolean* inputDiscretesArray,uint16_t size);
     void setHoldingRegistersRefrence(word* holdingRegistersArray,uint16_t size);

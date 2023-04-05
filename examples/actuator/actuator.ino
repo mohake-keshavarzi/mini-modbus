@@ -45,7 +45,8 @@ ISR(TIMER1_COMPA_vect) {
 // Based on Uno
 void setup()
 {
-    Serial.begin(115200);
+    Serial.begin(19200);
+    miniModbusSlave.setup(19200);
     // Serial2.begin(19200);
     pinMode(13, OUTPUT);
     miniModbusSlave.setHoldingRegistersRefrence(holdingRegisters,NUM_OF_HOLDING_REGS);

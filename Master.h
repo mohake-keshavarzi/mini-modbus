@@ -7,6 +7,9 @@
 
 class Master {
 private:
+    unsigned long baudRate{0};
+    unsigned long interCharDelay{0}; 
+
     Stream& serial;
     byte message[SERIAL_MESSAGE_BUFFER_SIZE];
     
@@ -26,6 +29,8 @@ private:
     
 public:
     Master(Stream& s,uint16_t digitalValuesBufferSize,uint16_t registerValuesBufferSize);
+
+    void setup(int baudRate);
 
 
     boolean writeSingleCoil(byte slaveID,word address,boolean value); // return false if process wasn't successfull or exception recieved 

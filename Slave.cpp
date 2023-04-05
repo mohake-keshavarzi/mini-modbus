@@ -18,7 +18,8 @@ unsigned short Slave::readSerial(byte* buffer)
             buffer[position] = serial.read();
             position++;
         }
-        // delay(READING_SERIAL_BYTE_INTERVAL_DELAY);
+        if(interCharDelay>0)
+            delay(interCharDelay);
     }
     
     return position;
@@ -29,6 +30,12 @@ Slave::Slave(uint16_t id, Stream& s, uint16_t digitalValuesBufferSize, uint16_t 
     , serial(s)
     , parser(nullptr, digitalValuesBufferSize, registerValuesBufferSize)
 {
+}
+
+void Slave::setup(int baudRate)
+{
+    this->baudRate=baudRate;
+    interCharDelay= 1000000 / baudRate / 10; // 10 bits per character
 }
 
 void Slave::setCoilsRefrence(boolean* coilsArray, uint16_t size)
