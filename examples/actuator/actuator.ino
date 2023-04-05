@@ -10,7 +10,7 @@ word holdingRegisters[NUM_OF_HOLDING_REGS] {};
 word inputRegisters[NUM_OF_INPUT_REGS] {};
 
 
-Slave miniModbusSlave{MY_ID,Serial2,PARSER_DIGITALS_BUFFER_SIZE,PARSER_REGISTERS_BUFFER_SIZE};
+Slave miniModbusSlave{MY_ID,Serial,PARSER_DIGITALS_BUFFER_SIZE,PARSER_REGISTERS_BUFFER_SIZE};
 
 void setupTimer1Interrupt(unsigned long delayTime) {
   cli(); // Disable global interrupts
@@ -36,34 +36,37 @@ void setupTimer1Interrupt(unsigned long delayTime) {
 
 // Timer1 interrupt service routine (ISR)
 ISR(TIMER1_COMPA_vect) {
-  digitalWrite(13,!digitalRead(13));
-  // for(int i{0};i<NUM_OF_HOLDING_REGS;i++) holdingRegisters[i]=i*126;
+  // digitalWrite(13,!digitalRead(13));
+  for(int i{0};i<NUM_OF_HOLDING_REGS;i++) holdingRegisters[i]=i*random(100,150);
+  for(int i{0};i<NUM_OF_INPUT_REGS;i++) inputRegisters[i]=i;  
+  if(digitalRead(13)) digitalWrite(13,false);
 
 }
 // Based on Uno
 void setup()
 {
-    Serial.begin(19200);
-    Serial2.begin(19200);
+    Serial.begin(115200);
+    // Serial2.begin(19200);
     pinMode(13, OUTPUT);
     miniModbusSlave.setHoldingRegistersRefrence(holdingRegisters,NUM_OF_HOLDING_REGS);
     miniModbusSlave.setInputRegistersRefrence(inputRegisters, NUM_OF_INPUT_REGS);
-    setupTimer1Interrupt(1000);
+    setupTimer1Interrupt(500);
 }
 
 void loop()
 {
     miniModbusSlave.execute();
+    
     // Serial.print("Coil0:");
     // Serial.println(coils[0]);
     // Serial.print("Coil1:");
     // Serial.println(coils[1]);
-    for(int i{0};i<NUM_OF_HOLDING_REGS;i++) {
-      Serial.print(holdingRegisters[i]);
-      Serial.print("    ");
-    }      
-    Serial.println();
-   
-}
+    // for(int i{0};i<NUM_OF_HOLDING_REGS;i++) {
+    //   Serial.print(holdingRegisters[i]);
+    //   Serial.print("    ");
+    // }      
+    // Serial.println();
 
+    
+}
 

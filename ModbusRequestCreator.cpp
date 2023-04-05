@@ -1,6 +1,7 @@
 #include "ModbusRequestCreator.h"
 #include "FunctionCodes.h"
 #include "WordFunctions.h"
+#include "AceCRC.h"
 
 /**
  * The overall structure each request is so similar to modbus theory
@@ -12,6 +13,14 @@
  * Each function returns the overall length of request message
  */
 
+uint16_t ModbusRequestCreator::addCRC(uint16_t message_size)
+{
+    word crc = ace_crc::crc16modbus_nibble::crc_calculate(message,message_size);
+    message[message_size++]= funcs.getLSByte(crc);
+    message[message_size++]= funcs.getMSByte(crc);
+    return message_size;
+}
+
 ModbusRequestCreator::ModbusRequestCreator(uint8_t slaveID)
 {
     this->slaveID = slaveID;
@@ -21,9 +30,9 @@ ModbusRequestCreator::ModbusRequestCreator(uint8_t slaveID)
 
 uint16_t ModbusRequestCreator::createReadCoilsRequest(uint16_t startAddress, uint16_t numberOfCoils)
 {
-    // size is slaveID + function code + startAddress + numOfCoils = 1+1+2+2=6
+    // size is slaveID + function code + startAddress + numOfCoils + CRC = 1+1+2+2+2=8
     delete[] message;
-    message = new byte[6];
+    message = new byte[8];
     message[0] = slaveID;
     message[1] = READ_COILS_FUNCTIONCODE;
     message[2] = funcs.getMSByte(startAddress);
@@ -31,14 +40,14 @@ uint16_t ModbusRequestCreator::createReadCoilsRequest(uint16_t startAddress, uin
     message[4] = funcs.getMSByte(numberOfCoils);
     message[5] = funcs.getLSByte(numberOfCoils);
 
-    return 6;
+    return addCRC(6);
 }
 
 uint16_t ModbusRequestCreator::createReadDiscreteInputsRequest(uint16_t startAddress, uint16_t numberOfCoils)
 {
-    // size is slaveID + function code + startAddress + numOfCoils = 1+1+2+2=6
+    // size is slaveID + function code + startAddress + numOfCoils + CRC = 1+1+2+2+2=8
     delete[] message;
-    message = new byte[6];
+    message = new byte[8];
     message[0] = slaveID;
     message[1] = READ_DISCRETE_INPUTS_FUNCTIONCODE;
     message[2] = funcs.getMSByte(startAddress);
@@ -46,14 +55,14 @@ uint16_t ModbusRequestCreator::createReadDiscreteInputsRequest(uint16_t startAdd
     message[4] = funcs.getMSByte(numberOfCoils);
     message[5] = funcs.getLSByte(numberOfCoils);
 
-    return 6;
+    return addCRC(6);
 }
 
 uint16_t ModbusRequestCreator::createWriteSingleRegisterRequest(uint16_t address, word value)
 {
-    // size is slaveID + function code + address + value = 1+1+2+2=6
+    // size is slaveID + function code + address + value + CRC = 1+1+2+2+2=8
     delete[] message;
-    message = new byte[6];
+    message = new byte[8];
     message[0] = slaveID;
     message[1] = WRITE_SINGLE_REGISTER_FUNCTIONCODE;
     message[2] = funcs.getMSByte(address);
@@ -61,14 +70,14 @@ uint16_t ModbusRequestCreator::createWriteSingleRegisterRequest(uint16_t address
     message[4] = funcs.getMSByte(value);
     message[5] = funcs.getLSByte(value);
 
-    return 6;
+    return addCRC(6);
 }
 
 uint16_t ModbusRequestCreator::createReadInputRegistersRequest(uint16_t startAddress, uint16_t numOfRegisters)
 {
-    // size is slaveID + function code + startAddress + numOfRegisters = 1+1+2+2=6
+    // size is slaveID + function code + startAddress + numOfRegisters = 1+1+2+2+2=8
     delete[] message;
-    message = new byte[6];
+    message = new byte[8];
     message[0] = slaveID;
     message[1] = READ_INPUT_REGISTERS_FUNCTIONCODE;
     message[2] = funcs.getMSByte(startAddress);
@@ -76,14 +85,14 @@ uint16_t ModbusRequestCreator::createReadInputRegistersRequest(uint16_t startAdd
     message[4] = funcs.getMSByte(numOfRegisters);
     message[5] = funcs.getLSByte(numOfRegisters);
 
-    return 6;
+    return addCRC(6);
 }
 
 uint16_t ModbusRequestCreator::createReadHoldingRegistersRequest(uint16_t startAddress, uint16_t numOfRegisters)
 {
-    // size is slaveID + function code + startAddress + numOfRegisters = 1+1+2+2=6
+    // size is slaveID + function code + startAddress + numOfRegisters + CRC = 1+1+2+2+2=8
     delete[] message;
-    message = new byte[6];
+    message = new byte[8];
     message[0] = slaveID;
     message[1] = READ_HOLDING_REGISTERS_FUNCTIONCODE;
     message[2] = funcs.getMSByte(startAddress);
@@ -91,7 +100,7 @@ uint16_t ModbusRequestCreator::createReadHoldingRegistersRequest(uint16_t startA
     message[4] = funcs.getMSByte(numOfRegisters);
     message[5] = funcs.getLSByte(numOfRegisters);
 
-    return 6;
+    return addCRC(6);
 }
 
 /**
@@ -100,9 +109,9 @@ uint16_t ModbusRequestCreator::createReadHoldingRegistersRequest(uint16_t startA
 uint16_t ModbusRequestCreator::createWriteSingleCoilRequest(uint16_t address, boolean value)
 {
 
-    // size is slaveID + function code + address + value = 1+1+2+2=6
+    // size is slaveID + function code + address + value + CRC = 1+1+2+2+2=8
     delete[] message;
-    message = new byte[6];
+    message = new byte[8];
     message[0] = slaveID;
     message[1] = WRITE_SINGLE_COIL_FUNCTIONCODE;
     message[2] = funcs.getMSByte(address);
@@ -115,14 +124,14 @@ uint16_t ModbusRequestCreator::createWriteSingleCoilRequest(uint16_t address, bo
         message[5] = 0x00;
     }
 
-    return 6;
+    return addCRC(6);
 }
 
 uint16_t ModbusRequestCreator::createWriteCoilsRequest(uint16_t startAddress, boolean* values, uint16_t quantity)
 {
     delete[] message;
-    // size is slaveID + function code + start address + quantity + byte count + values in bytes= 1+1+2+2+1+more=7+more
-    int message_size = 7;
+    // size is slaveID + function code + start address + quantity + byte count + values in bytes + CRC= 1+1+2+2+1+more +2 =7+more +2
+    int message_size = 9;
     uint8_t byteCount { quantity / 8 };
     if (quantity % 8 != 0)
         byteCount++;
@@ -154,14 +163,14 @@ uint16_t ModbusRequestCreator::createWriteCoilsRequest(uint16_t startAddress, bo
     for(int j{};j<byteCount;j++){
         message[currentPlaceInMessage+j]=myBytes[j];
     }
-    return message_size;
+    return addCRC(message_size-2);
 }
 
 uint16_t ModbusRequestCreator::createWriteRegistersRequest(uint16_t startAddress, word* values, uint16_t quantity)
 {
     delete[] message;
-    // size is slaveID + function code + start address + quantity + byte count + values in bytes= 1+1+2+2+1+more=7+more
-    int message_size = 7;
+    // size is slaveID + function code + start address + quantity + byte count + values in bytes + CRC= 1+1+2+2+1+more+2=7+more +2
+    int message_size = 9;
     uint8_t byteCount { quantity * 2 };
     message_size += byteCount;
     message = new byte[message_size];
@@ -180,7 +189,7 @@ uint16_t ModbusRequestCreator::createWriteRegistersRequest(uint16_t startAddress
         message[currentPlaceInMessage] = funcs.getLSByte(values[i]);
         currentPlaceInMessage++;
     }
-    return message_size;
+    return addCRC(message_size-2);
 }
 
 ModbusRequestCreator::~ModbusRequestCreator()

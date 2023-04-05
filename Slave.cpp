@@ -1,9 +1,33 @@
 #include "Slave.h"
 
-Slave::Slave(uint16_t id, Stream& s,uint16_t digitalValuesBufferSize,uint16_t registerValuesBufferSize)
+unsigned short Slave::readSerial(byte* buffer)
+{
+    unsigned short position{};
+    boolean overflow=false;
+    while (serial.available())
+    {
+        // The maximum number of bytes is limited to the serial buffer size of 128 bytes
+        // If more bytes is received than the BUFFER_SIZE the overflow flag will be set and the
+        // serial buffer will be red untill all the data is cleared from the receive buffer.
+        // Adopted from: https://github.com/angeloc/simplemodbusng/blob/master/SimpleModbusSlave/SimpleModbusSlave.cpp
+        if (overflow)
+            serial.read();
+        else {
+            if (position == SERIAL_MESSAGE_BUFFER_SIZE)
+                overflow = true;
+            buffer[position] = serial.read();
+            position++;
+        }
+        // delay(READING_SERIAL_BYTE_INTERVAL_DELAY);
+    }
+    
+    return position;
+}
+
+Slave::Slave(uint16_t id, Stream& s, uint16_t digitalValuesBufferSize, uint16_t registerValuesBufferSize)
     : id(id)
     , serial(s)
-    , parser(nullptr ,digitalValuesBufferSize, registerValuesBufferSize)
+    , parser(nullptr, digitalValuesBufferSize, registerValuesBufferSize)
 {
 }
 
@@ -30,13 +54,24 @@ void Slave::setInputRegistersRefrence(word* inputRegistersArray, uint16_t size)
 void Slave::execute()
 {
 
-    int messageSize = serial.available();
+    int messageSize = readSerial(message);
     int responseSize = 0;
     if (messageSize > 0) {
-        serial.readBytes(message, messageSize);
         parser.setMessage(message);
+        
         if (parser.getSlaveID() != id)
             return;
+        if (!parser.isValidCRC(messageSize)){
+            // temperory =(word) (millis()-time);
+            return; //RECOMENDED BAUDRATE IS 115200
+        }
+        ////////////////////////////////
+        // for (int i = 0; i < messageSize; i++) {
+        //     Serial.print(message[i], HEX);
+        //     Serial.print(" ");
+        // }
+        // Serial.println();
+        ///////////////////////////////
         switch (parser.getFunctionCode()) {
 
         case WRITE_SINGLE_COIL_FUNCTIONCODE:
@@ -128,7 +163,6 @@ void Slave::execute()
                     onReadRegisterfunc(HOLDING_REGISTERS, parser.getAddress(), parser.getNumberOfRegsOrDigitals());
             }
             break;
-            ////////////////
 
         default:
             responseSize = responseCreator.createExceptionResponse(parser.getFunctionCode(), INVALID_FUNCTION_CODE_EXCEPTION_CODE);
@@ -138,7 +172,9 @@ void Slave::execute()
     }
     serial.flush();
     messageSize = 0;
+    
     delay(delayTime);
+
 }
 
 void Slave::setOnReadRegisterRequestFunction(void (*func)(int type, word startingAddress, int quantity))

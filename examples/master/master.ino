@@ -3,7 +3,7 @@
 #define CONTROLLER_ID 0x01
 #define ACTUATOR_ID 0x02
 
-Master miniModbusMaster{Serial,PARSER_DIGITALS_BUFFER_SIZE,PARSER_REGISTERS_BUFFER_SIZE}; ///////////
+Master miniModbusMaster{Serial2,PARSER_DIGITALS_BUFFER_SIZE,PARSER_REGISTERS_BUFFER_SIZE}; ///////////
 boolean taskIsDone{false};
 word values[10]={800,250,87,65,32,95,12,1,75,698};
 
@@ -37,38 +37,44 @@ ISR(TIMER1_COMPA_vect) {
 
 // int working{0};
 void setup() {
-    // Serial2.begin(19200);
+    Serial2.begin(115200);
     Serial.begin(19200);
     pinMode(13, OUTPUT);
     digitalWrite(13,false);
 //    pinMode(20, INPUT_PULLUP);
-    setupTimer1Interrupt(500);
+    setupTimer1Interrupt(2000);
+    
     
 }
 void loop() {
     int quantity=5;
     // Serial.println("//////////////////////////////////////////////////////")    ;
-    if(miniModbusMaster.writeHoldingRegisters(ACTUATOR_ID, 0x0005, values, quantity)){
-      // Serial.println("Wrote Registers Successfully");
-      delay(100);
-    }
+    // if(miniModbusMaster.writeSingleRegister(ACTUATOR_ID,0x0003, values[0])){
+    //   // Serial.println("Wrote Registers Successfully");
+    //   setupTimer1Interrupt(300);
+    //   delay(100);
+    // }
+    // else{
+    //   setupTimer1Interrupt(2000);      
+    // }
     if(miniModbusMaster.readHoldingRegisters(ACTUATOR_ID, 0x0000, quantity)){
     
         // digitalWrite(13,true);
-        // Serial.println("Seccessful");
-        // Serial.print("DATA:");
+        Serial.println("Seccessful");
+        Serial.print("DATA:");
         for(int i{0};i<quantity;i++){
-          // Serial.print("  ");
-          // Serial.print(miniModbusMaster.getRegistersBuffer()[i]);    
+          Serial.print("  ");
+          Serial.print(miniModbusMaster.getRegistersBuffer()[i]);    
         }
-        // Serial.println();
+        Serial.println();
+        
     }
     else{
         // digitalWrite(13,false);
-        // Serial.print("Not seccessful: ");
-        // Serial.println(miniModbusMaster.getExceptionCode());
+        Serial.print("Not seccessful: ");
+        Serial.println(miniModbusMaster.getExceptionCode());
     }
-    // printInHex(miniModbusMaster.getResponseMessage(),20);
+    printInHex(miniModbusMaster.getResponseMessage(),20);
     delay(500);
 
     // Serial.println(working++);

@@ -7,7 +7,7 @@
 #include "FunctionCodes.h"
 #include "Arduino.h"
 #include "WordFunctions.h"
-
+#include "AceCRC.h"
 
 /// @brief It gets a message and extracts datas and features needed from it.
 class ModbusRequestResponseParser {    
@@ -27,6 +27,8 @@ public:
     /// @param message pointer to array of bytes containing the message.
     void setMessage(byte* message) { this->message = message; };
 
+    bool isValidCRC(uint16_t message_size);
+    
     /// @brief Extracts the Slave ID from the message.
     ///
     /// Note that if the data doesn't exist it will return wrong data or a null pointer runtime error will happen.

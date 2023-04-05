@@ -16,7 +16,12 @@ private:
     uint8_t slaveID = 0;
     WordFunctions funcs {};
     byte* message;
-
+    /**
+     * Function to add CRC16 code to the ned of the message
+     * @param message_size Size of the input message
+     * @return The new size of the message 
+    */
+    uint16_t addCRC(uint16_t message_size);
 public:
     /// @brief Creates base instance.
     /// @param slaveID ID of the slave that this instance is responsible to make request frames for.

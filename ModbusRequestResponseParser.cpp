@@ -11,6 +11,18 @@ ModbusRequestResponseParser::ModbusRequestResponseParser(byte* message,uint16_t 
     registerValues = new word[registerValuesBufferSize];
 }
 
+bool ModbusRequestResponseParser::isValidCRC(uint16_t message_size)
+{
+    word predicted_crc = ace_crc::crc16modbus_nibble::crc_calculate(message,message_size-2);
+    word given_crc = funcs.MSBLSBJoin(message[message_size-1],message[message_size-2]);
+    // Serial.print("GIVEN:");
+    // Serial.println(given_crc,HEX);
+    // Serial.print("predicted:");
+    // Serial.println(predicted_crc,HEX);
+
+    return predicted_crc == given_crc;
+}
+
 uint8_t ModbusRequestResponseParser::getFunctionCode()
 {
     return message[1];

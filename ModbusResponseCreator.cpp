@@ -1,5 +1,14 @@
 #include "ModbusResponseCreator.h"
 #include "WordFunctions.h"
+#include "AceCRC.h"
+
+uint16_t ModbusResponseCreator::addCRC(uint16_t message_size)
+{
+    word crc = ace_crc::crc16modbus_nibble::crc_calculate(message,message_size);
+    message[message_size++]= funcs.getLSByte(crc);
+    message[message_size++]= funcs.getMSByte(crc);
+    return message_size;
+}
 
 ModbusResponseCreator::ModbusResponseCreator()
 {
@@ -53,7 +62,7 @@ uint16_t ModbusResponseCreator::createReadCoilsOrDiscreteInputsResponse(uint16_t
         return 0;
     }
     delete[] message;
-    message_size = 3; // Master id +function code + byte count
+    message_size = 5; // Master id +function code + byte count + CRC
 
     uint8_t byteCount { quantity / 8 };
     if (quantity % 8 != 0)
@@ -84,7 +93,7 @@ uint16_t ModbusResponseCreator::createReadCoilsOrDiscreteInputsResponse(uint16_t
     for(int j{};j<byteCount;j++){
         message[currentPlaceInMessage+j]=myBytes[j];
     }
-    return message_size;
+    return addCRC(message_size-2);
 }
 
 /**
@@ -98,7 +107,7 @@ uint16_t ModbusResponseCreator::createWriteSingleRegisterResponse(uint16_t addre
     }
     holdingRegisters[address] = value;
     delete[] message;
-    message_size = 6; // master ID+function code + address + value = 1+2+2
+    message_size = 8; // master ID+function code + address + value + CRC = 1+1+2+2+2
     message = new byte[message_size];
     message[0] = MASTER_ID;
     message[1] = WRITE_SINGLE_REGISTER_FUNCTIONCODE;
@@ -107,7 +116,7 @@ uint16_t ModbusResponseCreator::createWriteSingleRegisterResponse(uint16_t addre
     message[4] = funcs.getMSByte(value);
     message[5] = funcs.getLSByte(value);
 
-    return message_size;
+    return addCRC(message_size-2);
 }
 
 /**
@@ -135,7 +144,7 @@ uint16_t ModbusResponseCreator::createReadHoldingOrInputRegistersResponse(uint16
         return 0;
     }
     delete[] message;
-    message_size = 3; // master id +function code + byte count
+    message_size = 5; // master id +function code + byte count + CRC
 
     uint8_t byteCount { numOfRegisters * 2 };
 
@@ -153,7 +162,7 @@ uint16_t ModbusResponseCreator::createReadHoldingOrInputRegistersResponse(uint16
         currentPlaceInMessage++;
     }
 
-    return message_size;
+    return addCRC(message_size-2);
 }
 
 /**
@@ -166,8 +175,8 @@ uint16_t ModbusResponseCreator::createWriteSingleCoilResponse(uint16_t address, 
         return 0;
     }
     delete[] message;
-    // size is master id + function code + address + value = 1+2+2=5
-    message_size = 6;
+    // size is master id + function code + address + value + CRC = 1+1+2+2+2=8
+    message_size = 8;
     message = new byte[message_size];
 
     message[0] = MASTER_ID;
@@ -184,7 +193,7 @@ uint16_t ModbusResponseCreator::createWriteSingleCoilResponse(uint16_t address, 
         message[5] = 0x00;
     }
 
-    return message_size;
+    return addCRC(message_size-2);
 }
 
 uint16_t ModbusResponseCreator::createWriteCoilsResponse(uint16_t startAddress, boolean* values, uint16_t quantity)
@@ -193,8 +202,8 @@ uint16_t ModbusResponseCreator::createWriteCoilsResponse(uint16_t startAddress, 
         return 0;
     }
     delete[] message;
-    // size is master id + function code + start address + quantitiy of written coils = 1+1+2+2=6
-    message_size = 6;
+    // size is master id + function code + start address + quantitiy of written coils + CRC = 1+1+2+2+2=8
+    message_size = 8;
     message = new byte[message_size];
 
     message[0] = MASTER_ID;
@@ -208,7 +217,7 @@ uint16_t ModbusResponseCreator::createWriteCoilsResponse(uint16_t startAddress, 
         coils[startAddress + i]=values[i];
     }
 
-    return message_size;
+    return addCRC(message_size-2);
 
 }
 
@@ -218,8 +227,8 @@ uint16_t ModbusResponseCreator::createWriteRegistersResponse(uint16_t startAddre
         return 0;
     }
     delete[] message;
-    // size is master id + function code + start address + quantitiy of written coils = 1+1+2+2=6
-    message_size = 6;
+    // size is master id + function code + start address + quantitiy of written coils + CRC = 1+1+2+2+2=8
+    message_size = 8;
     message = new byte[message_size];
 
     message[0] = MASTER_ID;
@@ -233,21 +242,21 @@ uint16_t ModbusResponseCreator::createWriteRegistersResponse(uint16_t startAddre
         holdingRegisters[startAddress + i]=values[i];
     }
 
-    return message_size;
+    return addCRC(message_size-2);
 
 }
 
 uint16_t ModbusResponseCreator::createExceptionResponse(uint8_t functionCode, uint8_t exceptionCode)
 {
     delete[] message;
-    // size is master id + function code for error + ExceptionCode = 1+1+1
-    message_size = 3;
+    // size is master id + function code for error + ExceptionCode + CRC = 1+1+1+2
+    message_size = 5;
     message = new byte[message_size];
 
     message[0] = MASTER_ID;
     message[1] = functionCode + 0x80;
     message[2] = exceptionCode;
-    return message_size;
+    return addCRC(message_size-2);
 }
 
 boolean ModbusResponseCreator::isDataAddressWrong(uint16_t startAddress, uint16_t numberOfCoilsOrRegisters, uint8_t typeOfMemmory)

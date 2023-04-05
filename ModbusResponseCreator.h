@@ -39,6 +39,12 @@ private:
     /// @return The size of the message in number of bytes.
     uint16_t createReadHoldingOrInputRegistersResponse(uint16_t startAddress, uint16_t numOfRegisters, uint8_t type);
 
+    /**
+     * Function to add CRC16 code to the ned of the message
+     * @param message_size Size of the input message
+     * @return The new size of the message 
+    */
+    uint16_t addCRC(uint16_t message_size);
 public:
     /// @brief Creates an instance of the class.
     ModbusResponseCreator();

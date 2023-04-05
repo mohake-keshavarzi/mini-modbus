@@ -8,7 +8,7 @@
 class Master {
 private:
     Stream& serial;
-    byte message[256];
+    byte message[SERIAL_MESSAGE_BUFFER_SIZE];
     
     unsigned int timeout{300};
     unsigned int numberOfTries{2};
@@ -21,6 +21,8 @@ private:
     ModbusRequestResponseParser parser;
 
     boolean  messageIsInvalid(ModbusRequestResponseParser &parser, byte myID, byte expectedFunctionCode);
+
+    unsigned short readSerial(byte* buffer);
     
 public:
     Master(Stream& s,uint16_t digitalValuesBufferSize,uint16_t registerValuesBufferSize);

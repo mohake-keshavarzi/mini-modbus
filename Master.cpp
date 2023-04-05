@@ -6,6 +6,7 @@ Master::Master(Stream& s,uint16_t digitalValuesBufferSize,uint16_t registerValue
 
 }
 
+
 boolean Master::writeSingleCoil(byte slaveID, word address, boolean value)
 {
     ModbusRequestCreator slave { slaveID };
@@ -20,12 +21,13 @@ boolean Master::writeSingleCoil(byte slaveID, word address, boolean value)
         serial.setTimeout(timeout);
         serial.write(slave.getMessage(), requestSize);
         delay(delayTime);
-        int responseSize = serial.available();
+        int responseSize = readSerial(message);
         if (responseSize <= 0)
             continue;
-        serial.readBytes(message, responseSize);
         parser.setMessage(message);
-        
+        if(!parser.isValidCRC(responseSize))
+            continue;
+  
         if (messageIsInvalid(parser, MASTER_ID, WRITE_SINGLE_COIL_FUNCTIONCODE))
             continue;
         if (parser.isItException()) {
@@ -57,11 +59,13 @@ boolean Master::writeSingleRegister(byte slaveID, word address, word value)
         serial.setTimeout(timeout);
         serial.write(slave.getMessage(), requestSize);
         delay(delayTime);
-        int responseSize = serial.available();
+        int responseSize = readSerial(message);
         if (responseSize <= 0)
             continue;
-        serial.readBytes(message, responseSize);
         parser.setMessage(message);
+        if(!parser.isValidCRC(responseSize))
+            continue;
+  
         if (messageIsInvalid(parser, MASTER_ID, WRITE_SINGLE_REGISTER_FUNCTIONCODE))
             continue;
         if (parser.isItException()) {
@@ -91,11 +95,13 @@ boolean Master::readInputRegisters(byte slaveID, word startAddress, word quantit
         serial.setTimeout(timeout);
         serial.write(slave.getMessage(), requestSize);
         delay(delayTime);
-        int responseSize = serial.available();
+        int responseSize = readSerial(message);
         if (responseSize <= 0)
             continue;
-        serial.readBytes(message, responseSize);
         parser.setMessage(message);
+        if(!parser.isValidCRC(responseSize))
+            continue;
+  
         if (messageIsInvalid(parser, MASTER_ID, READ_INPUT_REGISTERS_FUNCTIONCODE))
             continue;
         if (parser.isItException()) {
@@ -123,12 +129,16 @@ boolean Master::readHoldingRegisters(byte slaveID, word startAddress, word quant
         int requestSize = slave.createReadHoldingRegistersRequest(startAddress, quantity);
         serial.setTimeout(timeout);
         serial.write(slave.getMessage(), requestSize);
+
         delay(delayTime);
-        int responseSize = serial.available();
+        int responseSize = readSerial(message);
         if (responseSize <= 0)
             continue;
-        serial.readBytes(message, responseSize);
         parser.setMessage(message);
+        if(!parser.isValidCRC(responseSize)){
+            continue;
+        }
+  
         if (messageIsInvalid(parser, MASTER_ID, READ_HOLDING_REGISTERS_FUNCTIONCODE))
             continue;
         if (parser.isItException()) {
@@ -157,11 +167,13 @@ boolean Master::readCoils(byte slaveID, word startAddress, word quantity)
         serial.setTimeout(timeout);
         serial.write(slave.getMessage(), requestSize);
         delay(delayTime);
-        int responseSize = serial.available();
+        int responseSize = readSerial(message);
         if (responseSize <= 0)
             continue;
-        serial.readBytes(message, responseSize);
         parser.setMessage(message);
+        if(!parser.isValidCRC(responseSize))
+            continue;
+  
         if (messageIsInvalid(parser, MASTER_ID, READ_COILS_FUNCTIONCODE))
             continue;
         if (parser.isItException()) {
@@ -190,11 +202,13 @@ boolean Master::readDiscreteInputs(byte slaveID, word startAddress, word quantit
         serial.setTimeout(timeout);
         serial.write(slave.getMessage(), requestSize);
         delay(delayTime);
-        int responseSize = serial.available();
+        int responseSize = readSerial(message);
         if (responseSize <= 0)
             continue;
-        serial.readBytes(message, responseSize);
         parser.setMessage(message);
+        if(!parser.isValidCRC(responseSize))
+            continue;
+  
         if (messageIsInvalid(parser, MASTER_ID, READ_DISCRETE_INPUTS_FUNCTIONCODE))
             continue;
         if (parser.isItException()) {
@@ -223,11 +237,13 @@ boolean Master::writeCoils(byte slaveID, word startAddress, boolean* values, wor
         serial.setTimeout(timeout);
         serial.write(slave.getMessage(), requestSize);
         delay(delayTime);
-        int responseSize = serial.available();
+       int responseSize = readSerial(message);
         if (responseSize <= 0)
             continue;
-        serial.readBytes(message, responseSize);
         parser.setMessage(message);
+        if(!parser.isValidCRC(responseSize))
+            continue;
+  
         if(messageIsInvalid(parser,MASTER_ID,WRITE_MULTIPLE_COILS_FUNCTIONCODE))
             continue;
         if(parser.isItException()){
@@ -265,11 +281,13 @@ boolean Master::writeHoldingRegisters(byte slaveID, word startAddress, word* val
         // Serial.println();
     /////////////////////////////////
         delay(delayTime);
-        int responseSize = serial.available();
+        int responseSize = readSerial(message);
         if (responseSize <= 0)
             continue;
-        serial.readBytes(message, responseSize);
         parser.setMessage(message);
+        if(!parser.isValidCRC(responseSize))
+            continue;
+  
         if(messageIsInvalid(parser,MASTER_ID,WRITE_MULTIPLE_REGISTERS_FUNCTIONCODE))
             continue;
         if(parser.isItException()){
@@ -294,6 +312,29 @@ boolean Master::messageIsInvalid(ModbusRequestResponseParser &parser, byte myID,
     return parser.getFunctionCode() != expectedFunctionCode;
 }
 
+unsigned short Master::readSerial(byte* buffer)
+{
+    unsigned short position{};
+    boolean overflow=false;
+    while (serial.available())
+    {
+        // The maximum number of bytes is limited to the serial buffer size of 128 bytes
+        // If more bytes is received than the BUFFER_SIZE the overflow flag will be set and the
+        // serial buffer will be red untill all the data is cleared from the receive buffer.
+        // Adopted from: https://github.com/angeloc/simplemodbusng/blob/master/SimpleModbusSlave/SimpleModbusSlave.cpp
+        if (overflow)
+            serial.read();
+        else {
+            if (position == SERIAL_MESSAGE_BUFFER_SIZE)
+                overflow = true;
+            buffer[position] = serial.read();
+            position++;
+        }
+        // delay(READING_SERIAL_BYTE_INTERVAL_DELAY);
+    }
+    
+    return position;
+}
 
 Master::~Master()
 {

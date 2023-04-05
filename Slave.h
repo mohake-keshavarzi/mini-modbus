@@ -8,10 +8,12 @@
 class Slave
 {
 private:
+
+    word temperory;
     uint16_t id;
     Stream &serial;
     unsigned int delayTime{10};
-    byte message[256];
+    byte message[SERIAL_MESSAGE_BUFFER_SIZE];
 
     ModbusResponseCreator responseCreator{};
     ModbusRequestResponseParser parser;
@@ -22,9 +24,12 @@ private:
     void (*onReadDigitalfunc)(int type,word startingAddress, int quantity) {nullptr};
     void (*onWriteDigitalfunc)(int type,word startingAddress ,boolean* values, int quantity) {nullptr};
 
+    unsigned short readSerial(byte* buffer);
+
+
 public:
     Slave(uint16_t id,Stream &s,uint16_t digitalValuesBufferSize,uint16_t registerValuesBufferSize);
-
+     
     void setCoilsRefrence(boolean* coilsArray,uint16_t size);
     void setDiscreteInputsRefrence(boolean* inputDiscretesArray,uint16_t size);
     void setHoldingRegistersRefrence(word* holdingRegistersArray,uint16_t size);
