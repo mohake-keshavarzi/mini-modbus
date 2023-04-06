@@ -36,10 +36,9 @@ void setupTimer1Interrupt(unsigned long delayTime) {
 
 // Timer1 interrupt service routine (ISR)
 ISR(TIMER1_COMPA_vect) {
-  // digitalWrite(13,!digitalRead(13));
-  for(int i{0};i<NUM_OF_HOLDING_REGS;i++) holdingRegisters[i]=i*random(100,150);
+  digitalWrite(13,!digitalRead(13));
+  // for(int i{0};i<NUM_OF_HOLDING_REGS;i++) holdingRegisters[i]=i*random(100,150);
   for(int i{0};i<NUM_OF_INPUT_REGS;i++) inputRegisters[i]=i;  
-  if(digitalRead(13)) digitalWrite(13,false);
 
 }
 // Based on Uno

@@ -50,14 +50,14 @@ void setup() {
 void loop() {
     int quantity=5;
     // Serial.println("//////////////////////////////////////////////////////")    ;
-    // if(miniModbusMaster.writeSingleRegister(ACTUATOR_ID,0x0003, values[0])){
-    //   // Serial.println("Wrote Registers Successfully");
-    //   setupTimer1Interrupt(300);
-    //   delay(100);
-    // }
-    // else{
-    //   setupTimer1Interrupt(2000);      
-    // }
+    if(miniModbusMaster.writeHoldingRegisters(ACTUATOR_ID,0x0000,values,quantity)){
+      // Serial.println("Wrote Registers Successfully");
+      setupTimer1Interrupt(300);
+      delay(100);
+    }
+    else{
+      setupTimer1Interrupt(2000);      
+    }
     if(miniModbusMaster.readHoldingRegisters(ACTUATOR_ID, 0x0000, quantity)){
     
         // digitalWrite(13,true);
