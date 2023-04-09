@@ -259,9 +259,9 @@ uint16_t ModbusResponseCreator::createExceptionResponse(uint8_t functionCode, ui
     return addCRC(message_size-2);
 }
 
-boolean ModbusResponseCreator::isDataAddressWrong(uint16_t startAddress, uint16_t numberOfCoilsOrRegisters, uint8_t typeOfMemmory)
+boolean ModbusResponseCreator::isDataAddressWrong(uint16_t startAddress, uint16_t numberOfCoilsOrRegisters, uint8_t typeOfMemory)
 {
-    switch (typeOfMemmory) {
+    switch (typeOfMemory) {
     case COILS:
         // Serial.print("RESPONSE CREATOR: ");
         // Serial.print(startAddress);
