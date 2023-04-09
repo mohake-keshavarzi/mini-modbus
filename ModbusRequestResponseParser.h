@@ -57,7 +57,7 @@ public:
     ///
     /// Note that if the data doesn't exist it will return wrong data or a null pointer runtime error will happen.
     /// @return A byte containing the byte count.
-    uint8_t getByteCountInReponse();
+    uint8_t getByteCountInResponse();
 
     /// @brief Extracts the byte count field from the Request message.
     ///

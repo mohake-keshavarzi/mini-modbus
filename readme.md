@@ -21,6 +21,12 @@ The whole frame structure is so close to the original Modbus RTU but with more s
 Structure of the frame:  
 ` ID of the reciever(1 byte) + Function code(1 bute)+ Data + CRC`
 
+## Important Note
+Please note that the values for PARSER_DIGITALS_BUFFER_SIZE and PARSER_REGISTERS_BUFFER_SIZE should be exactly identical in both Slave and Master devices.
+
+It depends on the device that you are using to what values could be suitable for this two parameters. Larger values give you the opprtunity to send more data on a single message but it will absorb lots of dynamic memmory.
+
+
 ## Examples
 ### Master
 

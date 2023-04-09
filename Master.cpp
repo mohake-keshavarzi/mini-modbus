@@ -113,7 +113,7 @@ boolean Master::readInputRegisters(byte slaveID, word startAddress, word quantit
             exceptionCode = parser.getExceptionCode();
             return false;
         }
-        if (parser.getByteCountInReponse() != 2 * quantity)
+        if (parser.getByteCountInResponse() != 2 * quantity)
             continue;
         registersBuffer = parser.getRegisterValuesArray();
         failed = false;
@@ -150,7 +150,7 @@ boolean Master::readHoldingRegisters(byte slaveID, word startAddress, word quant
             exceptionCode = parser.getExceptionCode();
             return false;
         }
-        if (parser.getByteCountInReponse() != 2 * quantity)
+        if (parser.getByteCountInResponse() != 2 * quantity)
             continue;
         registersBuffer = parser.getRegisterValuesArray();
         failed = false;
@@ -185,7 +185,7 @@ boolean Master::readCoils(byte slaveID, word startAddress, word quantity)
             exceptionCode = parser.getExceptionCode();
             return false;
         }
-        if (parser.getByteCountInReponse() != (quantity + 7) / 8)
+        if (parser.getByteCountInResponse() != (quantity + 7) / 8)
             continue;
         digitalsBuffer = parser.getDigitalValuesArray();
         failed = false;
@@ -220,7 +220,7 @@ boolean Master::readDiscreteInputs(byte slaveID, word startAddress, word quantit
             exceptionCode = parser.getExceptionCode();
             return false;
         }
-        if (parser.getByteCountInReponse() != (quantity + 7) / 8)
+        if (parser.getByteCountInResponse() != (quantity + 7) / 8)
             continue;
         digitalsBuffer = parser.getDigitalValuesArray();
         failed = false;

@@ -56,7 +56,7 @@ uint16_t ModbusRequestResponseParser::getNumberOfRegsOrDigitals()
     return funcs.MSBLSBJoin(message[4], message[5]);
 }
 
-uint8_t ModbusRequestResponseParser::getByteCountInReponse()
+uint8_t ModbusRequestResponseParser::getByteCountInResponse()
 {
     return message[2];
 }
@@ -117,7 +117,7 @@ boolean* ModbusRequestResponseParser::getDigitalValuesArray()
     switch (getFunctionCode()) {
     case READ_COILS_FUNCTIONCODE:
     case READ_DISCRETE_INPUTS_FUNCTIONCODE:
-        count = getByteCountInReponse() * 8;
+        count = getByteCountInResponse() * 8;
         // digitalValues = new boolean[count];
         for (int i { 0 }; i < count; i++)
             digitalValues[i] = getDigitalValueByIndexInResponse(i);
@@ -143,7 +143,7 @@ word* ModbusRequestResponseParser::getRegisterValuesArray()
     switch (getFunctionCode()) {
     case READ_HOLDING_REGISTERS_FUNCTIONCODE:
     case READ_INPUT_REGISTERS_FUNCTIONCODE:
-        count = getByteCountInReponse() / 2;
+        count = getByteCountInResponse() / 2;
         // registerValues = new word[count];
         for (int i { 0 }; i < count; i++)
             registerValues[i] = getRegisterValueByIndexInResponse(i);
