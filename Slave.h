@@ -34,6 +34,8 @@ public:
     
     void setup(int baudRate);
 
+    void setInterCharDelay(unsigned int delay);
+
     void setCoilsRefrence(boolean* coilsArray,uint16_t size);
     void setDiscreteInputsRefrence(boolean* inputDiscretesArray,uint16_t size);
     void setHoldingRegistersRefrence(word* holdingRegistersArray,uint16_t size);

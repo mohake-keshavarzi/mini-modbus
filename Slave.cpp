@@ -38,6 +38,11 @@ void Slave::setup(int baudRate)
     interCharDelay= 1000000 / baudRate / 10; // 10 bits per character
 }
 
+void Slave::setInterCharDelay(unsigned int delay)
+{
+    interCharDelay = delay;
+}
+
 void Slave::setCoilsRefrence(boolean* coilsArray, uint16_t size)
 {
     responseCreator.setCoilsRefrence(coilsArray, size);
@@ -60,25 +65,19 @@ void Slave::setInputRegistersRefrence(word* inputRegistersArray, uint16_t size)
 
 void Slave::execute()
 {
-
     int messageSize = readSerial(message);
     int responseSize = 0;
+
     if (messageSize > 0) {
         parser.setMessage(message);
         
-        if (parser.getSlaveID() != id)
+        if (parser.getSlaveID() != id){
             return;
+        }
         if (!parser.isValidCRC(messageSize)){
-            // temperory =(word) (millis()-time);
             return; //RECOMENDED BAUDRATE IS 115200
         }
-        ////////////////////////////////
-        // for (int i = 0; i < messageSize; i++) {
-        //     Serial.print(message[i], HEX);
-        //     Serial.print(" ");
-        // }
-        // Serial.println();
-        ///////////////////////////////
+        
         switch (parser.getFunctionCode()) {
 
         case WRITE_SINGLE_COIL_FUNCTIONCODE:
