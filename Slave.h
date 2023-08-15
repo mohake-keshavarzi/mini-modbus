@@ -28,6 +28,7 @@ private:
 
     unsigned short readSerial(byte* buffer);
 
+    bool newCommandRecieved{false};
 
 public:
     Slave(uint16_t id,Stream &s,uint16_t digitalValuesBufferSize,uint16_t registerValuesBufferSize);
@@ -52,6 +53,11 @@ public:
     byte* getMessage(){return message;}
     void setDelayTime(unsigned int t){this->delayTime=t;}
 
+    bool getNewCommandRecivedStatus(){
+        bool result{newCommandRecieved};
+        newCommandRecieved=false;
+        return result;
+    }
     ~Slave();
 };
 

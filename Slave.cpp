@@ -174,6 +174,7 @@ void Slave::execute()
             responseSize = responseCreator.createExceptionResponse(parser.getFunctionCode(), INVALID_FUNCTION_CODE_EXCEPTION_CODE);
             break;
         }
+        newCommandRecieved = true;
         serial.write(responseCreator.getMessage(), responseSize);
     }
     serial.flush();
