@@ -6,6 +6,9 @@ It is a simplified version of the Modbus protocol, designed for Arduino. The pri
 This library uses [AceCRC](https://www.arduino.cc/reference/en/libraries/acecrc/) library, version 1.1.0, to handle CRC checking. Please assure to add this library to your enviroment.
 [AceCRC Github page](https://github.com/bxparks/AceCRC)
 
+### **Android**
+A new folder named 'android' is added to this repo. In there you can find an almost equivalent Java package of MiniModbus.Though I have tested it for my own project and it worked, there is no guarantee to work for you. So I recommend to use it just as a template for your own code.
+
 ## Supported Fuction Codes
 For now, the following Function Codes are supported:
 * READ COILS (0x01)
