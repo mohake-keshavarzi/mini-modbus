@@ -2,6 +2,10 @@
 
 It is a simplified version of the Modbus protocol, designed for Arduino. The primary goal of this library is to _create request and response messages_ and parse those messages. Using the Slave.h and Master.h classes handles the communications ,too.
 
+## Important Note
+This library uses [AceCRC](https://www.arduino.cc/reference/en/libraries/acecrc/) library, version 1.1.0, to handle CRC checking. Please assure to add this library to your enviroment.
+[AceCRC Github page](https://github.com/bxparks/AceCRC)
+
 ## Supported Fuction Codes
 For now, the following Function Codes are supported:
 * READ COILS (0x01)
